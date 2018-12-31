@@ -132,39 +132,88 @@ shinyjs.CyFit = function(){
 }
 
 shinyjs.SetClickNode = function(){
+	
+	cy.on('click', function(e){
+		if(e.cyTarget === cy){
+			if(HighlightedNode != undefined){
+				e = HighlightedNode;
+				neighborNodes = e.neighborhood().nodes();
+				neighborEdges = e.neighborhood().edges()		
+	
+				for(var i =0;i<neighborNodes.length;i++){
+					neighborEdges = neighborEdges.union(
+					neighborNodes[i].edgesWith(neighborNodes.difference(neighborNodes[i]))
+					)
+				}
+								
+				for(var i=0;i<neighborNodes.length;i++){ 
+					neighborNodes[i].style('background-color',v1[i])
+				}
+				e.style('background-color',v1[i])
+				for(var i=0;i<neighborEdges.length;i++){
+					neighborEdges[i].style('line-color',v2[i])
+				}
+				v1 = [];
+				v2 = [];
+				HighlightedNode = undefined;
+			}
+		}
+	})
+	cy.nodes().off("click")	
 	cy.nodes().on('click', function(e){		
 		e = e.cyTarget;	
-		if(!e.selected()){
+		if(!e.selected()){			
+			HighlightedNode = e;
 			// nodes
 			neighborNodes = e.neighborhood().nodes()
-			for(var i = 0;i<neighborNodes.length;i++){ 
-				v1[i] = JSON.parse(JSON.stringify( neighborNodes[i].style('background-color') ))
+			for(var i = 0;i<neighborNodes.length;i++){
+				v1[i] = neighborNodes[i].style('background-color')
 			}
-			neighborNodes.style('background-color','#e74c3c')
-			v1[i] = JSON.parse(JSON.stringify( e.style('background-color') ))
+			neighborNodes.style('background-color','#FF00FF')
+			v1[i] = e.style('background-color')
 			v1 = JSON.parse(JSON.stringify( v1 ))
-			e.style('background-color','#e74c3c')			
-	
+			e.style('background-color','#FF00FF')
+
 			// edges
 			neighborEdges = e.neighborhood().edges()
+			for(var i =0;i<neighborNodes.length;i++){
+				neighborEdges = neighborEdges.union(
+				neighborNodes[i].edgesWith(neighborNodes.difference(neighborNodes[i]))
+				)
+			}
+			
 			for(var i =0;i<neighborEdges.length;i++){
 				v2[i] = neighborEdges[i].style('line-color').slice()
 			}
-			neighborEdges.style('line-color','#e74c3c')
-			v2 = JSON.parse(JSON.stringify( v1 ))
+			neighborEdges.style('line-color','#FF00FF')
+			v2 = JSON.parse(JSON.stringify( v2 ))
 		}else{
-			neighborNodes = e.neighborhood().nodes()
-			neighborEdges = e.neighborhood().edges()
-			for(var i=0;i<neighborNodes.length;i++){
+			HighlightedNode = undefined;
+			neighborNodes = e.neighborhood().nodes();
+			neighborEdges = e.neighborhood().edges()		
+	
+			for(var i =0;i<neighborNodes.length;i++){
+				neighborEdges = neighborEdges.union(
+				neighborNodes[i].edgesWith(neighborNodes.difference(neighborNodes[i]))
+				)
+			}
+						
+			for(var i=0;i<neighborNodes.length;i++){ 
 				neighborNodes[i].style('background-color',v1[i])
 			}
 			e.style('background-color',v1[i])
+			
+			
 			for(var i=0;i<neighborEdges.length;i++){
 				neighborEdges[i].style('line-color',v2[i])
 			}
 			v1 = [];
-			v2 = [];
+			v2 = [];			
 		}		
 	})
-	
+		
+}
+
+shinyjs.StrongEdge = function(){
+	cy.edges().style('width','3px')
 }

@@ -270,7 +270,7 @@ ui = function(){
             selectInput(inputId = 'sel2', label = 'Distance',choices = c("pMM","MM","Kappa")),
             numericInput(inputId = 'alpha', label = 'Network weight α (for pMM only)', value = 1, min = 0, max = 1, step = 0.05),
             sliderInput(inputId = 'num1', label='Minimum cluster size',value = 3, min = 3, max = 8, step=1),
-            numericInput(inputId = 'num2', label='Minimum Distance', value = 0.5, step = 0.05, min= 0.1, max = 0.9),
+            numericInput(inputId = 'num2', label='Maximum gene-set distance', value = 0.5, step = 0.05, min= 0.1, max = 0.9),
             actionButton(inputId = 'btn8', label = 'Apply', style='margin-left:auto')
           ),
           fluidRow(
@@ -532,7 +532,7 @@ server = function(input, output, session) {
 
   v = GetDOP(GsM, PPI, .alpha)
   DC = unname(quantile(v, percentRank(as.numeric(GetDO(GsM)), 0.5 )))
-  updateNumericInput(session, 'num2',label='Minimum Distance', value = as.numeric(DC), step = 0.05, min= 0.1, max = 0.9)
+  updateNumericInput(session, 'num2',label='Maximum gene-set distance', value = as.numeric(DC), step = 0.05, min= 0.1, max = 0.9)
   # DC = quantile(v,ecdf(GetDO(GsM))(0.5)) # DOP's (MM's 0.5's percentage) value
   cl = GetClust(DistCutoff = DC, MinSize = 3, Dist = v, DistType = 2, GM = GsM)
   RenderGeneSetNetwork(cl, GsN, v, output, session, DC)
@@ -802,9 +802,10 @@ server = function(input, output, session) {
     shinyjs::delay(
       ms = 2000,
       expr = {
-        js$ClearEdge()
+        # js$ClearEdge()
         # js$BorderNode()
         js$ColorLabelNode()
+        js$StrongEdge()
       }
     )
   })

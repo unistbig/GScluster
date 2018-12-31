@@ -1,5 +1,7 @@
 var v1 = [];
 var v2 = [];
+var HighlightedNode; 
+
 
 function download(){
 	var download = document.createElement("a");

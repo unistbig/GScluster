@@ -501,9 +501,10 @@ RenderGeneNetwork = function(genes, output, PPICutoff, PPI, ScoreCutoff, session
   shinyjs::delay(
     ms = 2000,
     expr = {
-      js$ClearEdge()
+      #js$ClearEdge()
       #js$BorderNode()
       js$ColorLabelNode()
+      js$StrongEdge();
     }
   )
 
