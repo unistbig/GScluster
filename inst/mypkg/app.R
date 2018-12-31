@@ -108,8 +108,37 @@ ui = function(){
           selected = TRUE
           #startExpanded = TRUE,
         ), # Network
+        menuItem(text = 'Network Options',
 
-        menuItem(text = "Table", tabName = 'menu2') # Table
+                   actionButton( # GENESETNETWORK BUTTON
+                     inputId = 'btn2',
+                     label = "Gene-set Network",
+                     style='z-index:999;background-color:#232333;color:white;width:10em;'
+                   ),
+                   actionButton(  # GENENETWORK BUTTON
+                     inputId = 'btn1',
+                     label = "Gene Network ▽",
+                     style='z-index:999;width:10em;background-color:#232333;color:white;'
+                   ),
+                 div(
+                   style='display:none;
+                  z-index:999;',
+                   id='GENENETWORK_OPTIONS',
+                   verticalLayout(
+                     selectizeInput(inputId='menuI',label='Select Gene-set Cluster',choices='NOT BUILT YET',selected=NULL, width='auto'),
+                     #actionButton(inputId = 'HIGHLIGHT_NETWORK', label='Highlight', style='z-index:999'),
+                     shinyWidgets::materialSwitch(inputId = 'HIGHLIGHT_NETWORK', label ='', status = 'info'),
+                     sliderInput(inputId='PPICutoff',label="PPI Cutoff: ",min=0,max=999,value=700,step=10),
+                     #checkboxInput(inputId='GRAY_EDGE',label='Combined Score',value=TRUE),
+                     #uiOutput(outputId="my_cbgi"),
+                     actionButton(inputId = "DRAW_GENENETWORK", label = "Show PPI", style='z-index:999')
+                     #hr(),
+                     #actionButton(inputId = 'RESTORE_GENESET_NETWORK',label = 'Reset',icon = icon('undo'))
+                   ),
+                   width = 12
+                 )
+                 ),
+        menuItem(text = "Clustering Results", tabName = 'menu2') # Table
       )
     ),
     body = shinydashboard::dashboardBody(
@@ -193,34 +222,6 @@ ui = function(){
       tabItems(
         tabItem(
           tabName = 'menu1',
-          div(
-            style='display:none;
-            background:white;
-            padding:1em;margin-top:6em;margin-left:9em;position:absolute;z-index:999;',
-            id='GENENETWORK_OPTIONS',
-            verticalLayout(
-              selectizeInput(inputId='menuI',label='Select Gene-set Cluster',choices='NOT BUILT YET',selected=NULL, width='auto'),
-              #actionButton(inputId = 'HIGHLIGHT_NETWORK', label='Highlight', style='z-index:999'),
-              shinyWidgets::materialSwitch(inputId = 'HIGHLIGHT_NETWORK', label ='', status = 'info'),
-              sliderInput(inputId='PPICutoff',label="PPI Cutoff: ",min=0,max=999,value=700,step=10),
-              #checkboxInput(inputId='GRAY_EDGE',label='Combined Score',value=TRUE),
-              #uiOutput(outputId="my_cbgi"),
-              actionButton(inputId = "DRAW_GENENETWORK", label = "Show PPI", style='z-index:999')
-              #hr(),
-              #actionButton(inputId = 'RESTORE_GENESET_NETWORK',label = 'Reset',icon = icon('undo'))
-            ),
-            width = 12
-          ),
-          actionButton( # GENESETNETWORK BUTTON
-            inputId = 'btn2',
-            label = "Gene-set Network",
-            style='position:absolute;margin-left:10em;z-index:999;background-color:#232333;color:white;width:10em;'
-          ),
-          actionButton(  # GENENETWORK BUTTON
-            inputId = 'btn1',
-            label = "Gene Network",
-            style='position:absolute;margin-left:10em;z-index:999;top:8em;width:10em;background-color:#232333;color:white;'
-          ),
           actionButton(
             inputId = 'btn3',
             label = 'Download Graph',
@@ -269,8 +270,8 @@ ui = function(){
             display: none;',
             selectInput(inputId = 'sel2', label = 'Distance',choices = c("pMM","MM","Kappa")),
             numericInput(inputId = 'alpha', label = 'Network weight α (for pMM only)', value = 1, min = 0, max = 1, step = 0.05),
-            sliderInput(inputId = 'num1', label='Minimum cluster size',value = 3, min = 3, max = 8, step=1),
-            numericInput(inputId = 'num2', label='Maximum gene-set distance', value = 0.5, step = 0.05, min= 0.1, max = 0.9),
+            sliderInput(inputId = 'num1', label = 'Minimum Seed Size',value = 3, min = 3, max = 8, step=1),
+            numericInput(inputId = 'num2', label = 'Merging Threshold', value = 0.5, step = 0.05, min= 0.1, max = 0.9),
             actionButton(inputId = 'btn8', label = 'Apply', style='margin-left:auto')
           ),
           fluidRow(
@@ -847,6 +848,7 @@ server = function(input, output, session) {
 
   observeEvent(input$btn16,{
   	shinyjs::showElement('ClearTab2')
+    shinyjs::show("tab2")
 	  tab = matrix(0,0,2)
 
   	for(i in 1:length(cl)){
@@ -872,7 +874,7 @@ server = function(input, output, session) {
   observeEvent(input$btn17,{
 	  shinyjs::showElement('ClearTab2')
 	  shinyjs::hideElement('DivContainOpt5')
-
+    shinyjs::show('tab2')
 	  i = as.numeric(input$menuI)
     genes = unique(unlist(GsM[cl[[i]]]))
 	  nobj = BuildGeneNetwork(genes, input$PPICutoff/1000, PPI, ScoreCutoff)

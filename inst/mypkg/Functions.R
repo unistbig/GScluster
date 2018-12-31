@@ -222,30 +222,31 @@ StringSep = function(x, Cv){
 BuildDT = function(cl, GsN, GsM, GsQ){
 
   DF = data.frame(matrix(ncol=4,nrow=0), stringsAsFactors = FALSE)
-  colnames(DF) = c("Geneset Name","Geneset Qvalue", "Geneset member", 'Cluster')
+  colnames(DF) = c("Cluster","Geneset Name","Geneset Qvalue", "Geneset member")
   for(i in 1:length(cl)){
     ThisClust = cl[[i]]
     for(j in 1:length(ThisClust)){
       v = ThisClust[j]
       ThisGsN = GsN[v]
       if(nchar(ThisGsN)>30){ ThisGsN = StringSep(ThisGsN, 30) }
-
       ThisGsM = paste(GsM[[v]], collapse = ', ')
-
       if(length(ThisGsM)>30){ ThisGsM = StringSep(ThisGsM, 30) }
       ThisGsN = as.character(ThisGsN)
       ThisGsM = as.character(ThisGsM)
       ThisGsQ = as.numeric(GsQ[v])
-
-      DF = rbind(DF,cbind(ThisGsN, round(ThisGsQ,5), ThisGsM, i))
+      ThisClustNo = i
+      DF = rbind(DF,cbind(ThisClustNo,ThisGsN, round(ThisGsQ,5), ThisGsM))
     }
   }
-  DF[,2]= as.numeric(as.character(DF[,2]))
+
+  DF[,3] = as.numeric(as.character(DF[,3])) # geneset qvalue
+  # DF[,2] = as.character(DF[,2]) # geneset name
 
   DT::datatable(
     DF,
     extensions = 'Buttons',
     filter = 'top',
+    rownames = FALSE,
     options = list(
       dom = 'Blftipr',
       lengthChange = TRUE,
@@ -255,9 +256,9 @@ BuildDT = function(cl, GsN, GsM, GsQ){
       scrollX = TRUE,
       scrollY = TRUE,
       buttons ='csv',
-      order = list(2,'desc')
+      order = list(2,'asc')
     ),
-    colnames = c("Name", 'Qvalue', 'Member', 'Cluster'),
+    colnames = c("Cluster","Name", 'Qvalue', 'Member'),
     selection = 'none'
   )
 }
@@ -399,7 +400,7 @@ BuildGeneNetwork = function(genes, PPICutoff = 0.7, PPI, ScoreCutoff){
     }
   }
 
-  color = rep('#fc7bee', length(source)) # Edge color : gray , #666666, / pink , #fc7bee
+  color = rep('#001c54', length(source)) # Edge color : gray , #666666, / pink , #fc7bee
   edgeData = data.frame(source, target, color, stringsAsFactors=FALSE)
 
   if(length(source) ==0){
