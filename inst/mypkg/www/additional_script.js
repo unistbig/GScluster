@@ -1,3 +1,6 @@
+var v1 = [];
+var v2 = [];
+
 function download(){
 	var download = document.createElement("a");
 	download.id="dl_temp"
@@ -28,3 +31,4 @@ function GetPageHeight()
     var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
     return height;
 }
+

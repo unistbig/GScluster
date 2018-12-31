@@ -67,134 +67,50 @@
         var path;
         var midPointX = (startNode.renderedPosition('x') + targetNode.renderedPosition('x'))/2 ;
         var midPointY = (startNode.renderedPosition('y') + targetNode.renderedPosition('y'))/2 ;
-        if (typeof ele.style('control-point-distance') !== 'undefined') {
+        var deflection;
+		
+		var num = ele.style('control-point-step-size') ;		
+		if (ele.style('curve-style') === "bezier") {
+			deflection = num.substring(0 , num.length - 2)/2 ;						
+		} else {
+			deflection = num.substring(0 , num.length - 2)/2*2 ; 
+		}
+		
+		var leftDeflection ;
+		var rightDeflection ;
 
-            var num = ele.style('control-point-distance') ;
-            var deflection;
-            
-            if (ele.style('curve-style') === "unbundled-bezier") {
-                deflection = num.substring(0 , num.length - 2) ;
-            } else {
-               deflection = num.substring(0 , num.length - 2)/2 ; 
-            }
-            
-            deflection *= side ;
-            if (ele.style('curve-style') !== 'segments') {
-                
-                var weight = ele.style('control-point-weights') ;
-                var leftDeflection ;
-                var rightDeflection ;
-
-                if (weight < 0.5) {
-                    leftDeflection = deflection*weight;
-                    rightDeflection = 2*deflection - leftDeflection ;
-                } else if (weight > 0.5) {
-                    weight = 1 - weight ;
-                    rightDeflection = deflection*weight;
-                    leftDeflection = 2*deflection - rightDeflection ;
-                } else {
-                    leftDeflection = deflection;
-                    rightDeflection = deflection;
-                }
-
-                path = nested.path("M" + (startNode.renderedPosition('x') ) + " " + startNode.renderedPosition('y') + 
-                        " C " +
-                        ((startNode.renderedPosition('x')) - rightDeflection)+ " " + (startNode.renderedPosition('y') + rightDeflection) + " " +
-                        ((targetNode.renderedPosition('x')) + leftDeflection)+ " " + (targetNode.renderedPosition('y') + leftDeflection) + " " +
-                        (targetNode.renderedPosition('x')) + " " + targetNode.renderedPosition('y')).style({
-                            fill: 'transparent'
-                        });
-                path.stroke({ width : ele.style('width') , color : ele.style('line-color') , opacity : ele.style('opacity')});
-                
-            } else {
-                var weight = ele.style('segment-weights');               
-                var upperControlPoint ;
-                var lowerControlPoint ;
-
-                if (weight < 0.5) {
-                    weight = 0.5 - weight ;
-                    lowerControlPoint = midPointX + ((targetNode.renderedPosition('x') - startNode.renderedPosition('x'))*weight) ;
-                    upperControlPoint = midPointX - ((targetNode.renderedPosition('x') - startNode.renderedPosition('x'))*weight) ;
-                } else if (weight > 0.5 ) {
-                    weight = weight - 0.5 ;
-                    lowerControlPoint = midPointX - ((targetNode.renderedPosition('x') - startNode.renderedPosition('x'))*weight) ;
-                    upperControlPoint = midPointX + ((targetNode.renderedPosition('x') - startNode.renderedPosition('x'))*weight) ;
-                } else {
-                    lowerControlPoint = midPointX ;
-                    upperControlPoint = midPointX ;
-                }
-
-                path = nested.path("M" + startNode.renderedPosition('x') + " " + startNode.renderedPosition('y') + 
-                        " L " +
-                        (upperControlPoint) + " " + (midPointY + deflection) +
-                        " L " +
-                        targetNode.renderedPosition('x') + " " + targetNode.renderedPosition('y')).style({
-                            fill: 'transparent'
-                        });
-                path.stroke({ width : ele.style('width') , color : ele.style('line-color') , opacity : ele.style('opacity')});
-            }
-        } else {
-
-            var num = ele.style('control-point-step-size') ;
-
-            if (ele.style('curve-style') === "bezier") {
-                deflection = num.substring(0 , num.length - 2)/2 ;
-            } else {
-               deflection = num.substring(0 , num.length - 2)/2*2 ; 
-            }
-
-            var weight = ele.style('control-point-weights') ;
-            var leftDeflection ;
-            var rightDeflection ;
-
-            if (weight < 0.5) {
-                leftDeflection = deflection*weight;
-                rightDeflection = 2*deflection - leftDeflection ;
-            } else if (weight > 0.5) {
-                weight = 1 - weight ;
-                rightDeflection = deflection*weight;
-                leftDeflection = 2*deflection - rightDeflection ;
-            } else {
-                leftDeflection = deflection;
-                rightDeflection = deflection;
-            }
-
-            path = nested.path("M" + (startNode.renderedPosition('x') ) + " " + startNode.renderedPosition('y') + 
-                    " C " +
-                    ((startNode.renderedPosition('x')) - rightDeflection) + " " + (startNode.renderedPosition('y') - rightDeflection) + " " +
-                    ((targetNode.renderedPosition('x')) + leftDeflection) + " " + (targetNode.renderedPosition('y') - leftDeflection) + " " +
-                    (targetNode.renderedPosition('x')) + " " + targetNode.renderedPosition('y')).style({
-                        fill: 'transparent'
-                    });
-            path.stroke({ width : ele.style('width') , color : ele.style('line-color') , opacity : ele.style('opacity')});
-
-        }
+		leftDeflection = deflection;
+		rightDeflection = deflection;
+	
+		path = nested.path("M" + (startNode.renderedPosition('x') ) + " " + startNode.renderedPosition('y') + 
+			" C " +
+			((startNode.renderedPosition('x')) - rightDeflection) + " " + (startNode.renderedPosition('y') - rightDeflection) + " " +
+			((targetNode.renderedPosition('x')) + leftDeflection) + " " + (targetNode.renderedPosition('y') - leftDeflection) + " " +
+			(targetNode.renderedPosition('x')) + " " + targetNode.renderedPosition('y')).style({
+				fill: 'transparent'
+			});
+		path.stroke({ width : ele.style('width') , color : ele.style('line-color') , opacity : ele.style('opacity')});	
 
         if (ele.style('line-style') === "dotted") {
             path.style('stroke-dasharray' , "1, 1");
         } else if (ele.style('line-style') === "dashed") {
             path.style('stroke-dasharray' , "10, 5");
-        }
-        
+        }        
         
         if (ele.style('source-arrow-shape') !== 'none') {
-            var marker = makeArrowHeads(ele , nested , 'source') ;
-            
+            var marker = makeArrowHeads(ele , nested , 'source') ;            
             path.marker("start" , marker) ;
         }
         if (ele.style('mid-source-arrow-shape') !== 'none') {
             var marker = makeArrowHeads(ele , nested) ;
-
             path.marker("mid" , marker) ;
         } 
         if (ele.style('target-arrow-shape') !== 'none') {
             var marker = makeArrowHeads(ele , nested , 'target') ;
-
             path.marker("end" , marker) ;
         }
         if (ele.style('mid-target-arrow-shape') !== 'none') {
             var marker = makeArrowHeads(ele , nested , 'mid-target') ;
-
             path.marker("mid" , marker) ;
         }
         return path;

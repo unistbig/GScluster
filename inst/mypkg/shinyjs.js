@@ -35,6 +35,7 @@ animate : true
 
 shinyjs.SetFontSize = function(v){
 cy.nodes().style("font-size", v+"em");
+cy.nodes()[0].activate()
 }
 /*
 shinyjs.SearchNode = function(id){
@@ -121,7 +122,49 @@ shinyjs.SetHref = function(){
 }
 
 shinyjs.SetHeight = function(){
-	v = GetPageHeight()*0.85+'px';
-	console.log(v);
+	v = GetPageHeight()*0.85+'px';	
+	$(".shiny-spinner-output-container").css("height",v)
 	$("#CYCONTAINER").css("height",v)
+}
+
+shinyjs.CyFit = function(){
+	cy.fit(cy.zoom())
+}
+
+shinyjs.SetClickNode = function(){
+	cy.nodes().on('click', function(e){		
+		e = e.cyTarget;	
+		if(!e.selected()){
+			// nodes
+			neighborNodes = e.neighborhood().nodes()
+			for(var i = 0;i<neighborNodes.length;i++){ 
+				v1[i] = JSON.parse(JSON.stringify( neighborNodes[i].style('background-color') ))
+			}
+			neighborNodes.style('background-color','#e74c3c')
+			v1[i] = JSON.parse(JSON.stringify( e.style('background-color') ))
+			v1 = JSON.parse(JSON.stringify( v1 ))
+			e.style('background-color','#e74c3c')			
+	
+			// edges
+			neighborEdges = e.neighborhood().edges()
+			for(var i =0;i<neighborEdges.length;i++){
+				v2[i] = neighborEdges[i].style('line-color').slice()
+			}
+			neighborEdges.style('line-color','#e74c3c')
+			v2 = JSON.parse(JSON.stringify( v1 ))
+		}else{
+			neighborNodes = e.neighborhood().nodes()
+			neighborEdges = e.neighborhood().edges()
+			for(var i=0;i<neighborNodes.length;i++){
+				neighborNodes[i].style('background-color',v1[i])
+			}
+			e.style('background-color',v1[i])
+			for(var i=0;i<neighborEdges.length;i++){
+				neighborEdges[i].style('line-color',v2[i])
+			}
+			v1 = [];
+			v2 = [];
+		}		
+	})
+	
 }

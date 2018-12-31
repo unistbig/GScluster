@@ -93,10 +93,6 @@ GsQ = GsQ[Idx]
 GsM = GsM[Idx]
 if(IsGsD){GsD = GsD[Idx]}
 
-if(!is.null(.GSAresult)){ GSAresult = .GSAresult } else{
-  print("GSAresult not given, read Demo file")
-  GSAresult = read.delim('sample_geneset.txt',header = TRUE, stringsAsFactors = FALSE) # Name, Genes, Qvalue
-}
 
 ui = function(){
   shinydashboard::dashboardPage(
@@ -318,7 +314,7 @@ ui = function(){
           ),
           actionButton(
             inputId = 'btn4',
-            label = 'ColorEdge',
+            label = 'PPI Evidence',
             style='position:absolute; z-index:9999;right:26.5em;top:0.5em;display:none;'
           ),
           fluidRow(
@@ -384,7 +380,7 @@ ui = function(){
             width = 12,
             id='DivContainPlot1',
             style='padding-right:1em;
-            z-index:999;
+            z-index:-1;
             position:absolute;
             margin-top:10em;
             right:0.5em;',
@@ -420,12 +416,14 @@ ui = function(){
           ),
 
           uiOutput(
-            style={'position:absolute;margin-top:27em;z-index:999;'},
+            style={'position:absolute;bottom : 5em; margin-left:7em;z-index:999;'},
             outputId='legend2'
           ),
           div(
             id='CYCONTAINER',
-            rcytoscapejsOutput(outputId = 'CY', height = "100%")
+            shinycssloaders::withSpinner(
+              rcytoscapejsOutput(outputId = 'CY', height = "100%"),
+              proxy.height = '600px')
           )
         ),
         tabItem(
@@ -520,7 +518,9 @@ server = function(input, output, session) {
       nodeWidth = '30'
     )
 
-    output$CY = renderRcytoscapejs( rcytoscapejs(cjn$nodes, cjn$edges))
+
+
+    output$CY = renderRcytoscapejs( rcytoscapejs(cjn$nodes, cjn$edges, highlightConnectedNodes = FALSE))
     UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))
     UpdateClusters(session, 1:length(cl))
     ClearCy()
@@ -580,7 +580,8 @@ server = function(input, output, session) {
       nodeWidth = '30'
     )
 
-    output$CY = renderRcytoscapejs( rcytoscapejs(cjn$nodes, cjn$edges))
+
+    output$CY = renderRcytoscapejs( rcytoscapejs(cjn$nodes, cjn$edges, highlightConnectedNodes = FALSE))
     UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))
     UpdateClusters(session, 1:length(cl))
     ClearCy()
@@ -615,11 +616,10 @@ server = function(input, output, session) {
     shinyjs::showElement("DivContainPlot1", anim = 'slide', time = 0.5)
     shinyjs::showElement("ClearPlot1",  anim = 'slide', time = 0.5)
     shinyjs::hideElement("RenderPlot1", anim = 'slide', time = 0.5)
+    shinyjs::runjs("$('#DivContainPlot1').css('z-index',1)")
     i = as.numeric(input$menuI)
     res = GetDisease(unique(unlist(GsM[cl[[i]]])))
     wc = wordcloud2(res)
-
-
     output$plot1 = renderWordcloud2( wc )
   })
 
@@ -661,6 +661,7 @@ server = function(input, output, session) {
   observeEvent(input$btn6,{
     js$SetFontSize(input$sld1)
     shinyjs::hideElement("DivContainOpt2")
+    js$CyFit();
 
   })
 
@@ -674,14 +675,15 @@ server = function(input, output, session) {
   observeEvent(input$ClearPlot1, {
     shinyjs::hideElement('DivContainPlot1')
     shinyjs::showElement('RenderPlot1')
-
+    shinyjs::runjs("$('#DivContainPlot1').css('z-index',-1)")
   })
 
   # NodeSearch
   observeEvent(input$btn13, {
     #js$SearchNode(input$sel1)
-    js$HighNode(input$sel1)
-    shinyjs::delay( ms = 2000, expr = { js$DownNode(input$sel1) })
+    v = paste0("#", input$sel1)
+    js$HighNode(v)
+    shinyjs::delay( ms = 2000, expr = { js$DownNode(v) })
   })
 
   # download network svg form
@@ -715,7 +717,8 @@ server = function(input, output, session) {
       nodeWidth = '30'
     )
 
-    output$CY = renderRcytoscapejs( rcytoscapejs(cjn$nodes, cjn$edges))
+
+    output$CY = renderRcytoscapejs( rcytoscapejs(cjn$nodes, cjn$edges, highlightConnectedNodes = FALSE))
     UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))
     UpdateClusters(session, 1:length(cl))
     ClearCy()
@@ -782,7 +785,13 @@ server = function(input, output, session) {
       nodeWidth = '30'
     )
 
-    output$CY = renderRcytoscapejs( rcytoscapejs(cjn$nodes, cjn$edges))
+    suppressWarnings(
+      for(i in 1:length(cjn$nodes)){ cjn$nodes[[i]]$data$href = GetGenecardURL(cjn$nodes[[i]]$data$id) }
+    )
+
+
+    output$CY = renderRcytoscapejs( rcytoscapejs(cjn$nodes, cjn$edges, highlightConnectedNodes = FALSE))
+
     shinyjs::delay(ms = 2000,{js$SetHref()})
 
     UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))

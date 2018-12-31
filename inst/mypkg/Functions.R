@@ -442,6 +442,7 @@ ClearCy = function(hover = FALSE){
       js$SetCxtTap();
       if(!hover){js$ClearMouseOverNode();}
       js$ColaLayout();
+      js$SetClickNode();
     }
   )
 }

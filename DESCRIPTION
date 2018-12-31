@@ -9,6 +9,7 @@ Depends:
 	htmlwidgets,
 	igraph,
 	shiny,
+	shinycssloaders,
 	shinydashboard,
 	shinyjs,
 	shinyWidgets,

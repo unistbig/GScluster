@@ -2,3 +2,4 @@
 
 export(GScluster)
 export(GetGSASNP2Data)
+export(GetGSASeqData)

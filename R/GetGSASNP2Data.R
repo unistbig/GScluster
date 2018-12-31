@@ -8,8 +8,6 @@
 #' @export
 #'
 
-# filename = 'file:///C:/Users/jinhwan/Documents/카카오톡 받은 파일/zscore_result.txt'
-
 GetGSASNP2Data = function(filename){
   tab = read.delim(filename, header = T, stringsAsFactors = FALSE)
   GS = tab[,1]
@@ -18,13 +16,13 @@ GetGSASNP2Data = function(filename){
   Genes = sort(unique(strsplit(paste(tab[,8],collapse = '; '),'; ')[[1]]))
   Genes = Genes[-1] # remove " "
 
-  score = matrix(0,length(Genes),2)
+  GeneScores = matrix(0,length(Genes),2)
 
   for(i in 1:length(Genes)){
     temp = strsplit(Genes[i],'\\(')[[1]]
-    score[i,1] = temp[1]
+    GeneScores[i,1] = temp[1]
     v = as.numeric(strsplit(temp[2],'\\)')[[1]][1])
-    score[i,2] = 2^(-max(c(v,0)))
+    GeneScores[i,2] = 2^(-max(c(v,0)))
   }
 
   Genelist = c()
@@ -32,11 +30,11 @@ GetGSASNP2Data = function(filename){
     Genelist[i] = paste(sort(unname(sapply(strsplit(tab[i,8],'; ')[[1]], function(i){strsplit(i,'\\(')[[1]][1]}))),collapse = ' ')
   }
 
-  gsFile = data.frame(cbind(GS, Genelist, Qvalues), stringsAsFactors = FALSE)
-  gsFile[,3] = as.numeric(gsFile[,3])
-  score = data.frame(score, stringsAsFactors = FALSE)
-  score[,2] = as.numeric(score[,2])
-  return(list(gsFile = gsFile, score = score))
+  GSAresult = data.frame(cbind(GS, Genelist, Qvalues), stringsAsFactors = FALSE)
+  GSAresult[,3] = as.numeric(GSAresult[,3])
+  GeneScores = data.frame(GeneScores, stringsAsFactors = FALSE)
+  GeneScores[,2] = as.numeric(GeneScores[,2])
+  return(list(GSAresult = GSAresult, GeneScores = GeneScores))
 
 }
 
