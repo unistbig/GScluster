@@ -469,7 +469,8 @@ BuildMultiHub = function(cl, GsM, PPI, PPICutoff, ScoreCutoff){
     res[kk,],
     colnames = c("Gene", 'Degree', 'Cluster'),
     options = list(dom = 't'),
-    rownames = FALSE
+    rownames = FALSE,
+    selection = 'single'
   )
 }
 

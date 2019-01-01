@@ -162,7 +162,7 @@ shinyjs.SetClickNode = function(){
 	cy.nodes().off("click")	
 	cy.nodes().on('click', function(e){		
 		e = e.cyTarget;	
-		if(!e.selected()){			
+		if(!e.selected()){
 			HighlightedNode = e;
 			// nodes
 			neighborNodes = e.neighborhood().nodes()
@@ -172,7 +172,7 @@ shinyjs.SetClickNode = function(){
 			neighborNodes.style('background-color','#FF00FF')
 			v1[i] = e.style('background-color')
 			v1 = JSON.parse(JSON.stringify( v1 ))
-			e.style('background-color','#FF00FF')
+			e.style('background-color','#F1C40F')
 
 			// edges
 			neighborEdges = e.neighborhood().edges()
@@ -190,30 +190,72 @@ shinyjs.SetClickNode = function(){
 		}else{
 			HighlightedNode = undefined;
 			neighborNodes = e.neighborhood().nodes();
-			neighborEdges = e.neighborhood().edges()		
-	
+			neighborEdges = e.neighborhood().edges()
+
 			for(var i =0;i<neighborNodes.length;i++){
 				neighborEdges = neighborEdges.union(
 				neighborNodes[i].edgesWith(neighborNodes.difference(neighborNodes[i]))
 				)
 			}
-						
+
 			for(var i=0;i<neighborNodes.length;i++){ 
 				neighborNodes[i].style('background-color',v1[i])
 			}
 			e.style('background-color',v1[i])
-			
-			
+
 			for(var i=0;i<neighborEdges.length;i++){
 				neighborEdges[i].style('line-color',v2[i])
 			}
 			v1 = [];
-			v2 = [];			
-		}		
+			v2 = [];
+		}
 	})
-		
 }
 
 shinyjs.StrongEdge = function(){
 	cy.edges().style('width','3px')
+}
+
+shinyjs.HighlightTab = function(){	
+	v = cy.nodes("#"+$("#tab2 .selected td")[0].innerText)
+		
+	if(v.length){ // node exist
+		if(HighlightedNode == undefined){ // nothing selected before		
+			v.trigger('click')
+			v.select()
+		}
+		else if(HighlightedNode === v){
+			v.trigger('click')
+			v.unselect()
+		}
+		else{	
+			// Deselect pre-selected Nodes
+			neighborNodes = HighlightedNode.neighborhood().nodes()
+			neighborEdges = HighlightedNode.neighborhood().edges()
+
+			for(var i =0;i<neighborNodes.length;i++){
+				neighborEdges = neighborEdges.union(
+				neighborNodes[i].edgesWith(neighborNodes.difference(neighborNodes[i]))
+				)
+			}
+
+			for(var i=0;i<neighborNodes.length;i++){ 
+				neighborNodes[i].style('background-color',v1[i])
+			}
+			HighlightedNode.style('background-color',v1[i])
+
+			for(var i=0;i<neighborEdges.length;i++){
+				neighborEdges[i].style('line-color',v2[i])
+			}
+			v1 = [];
+			v2 = [];
+								
+			HighlightedNode.unselect()
+			HighlightedNode = undefined;
+			
+			v.trigger('click')		
+			v.select()		
+		}
+	}
+	
 }

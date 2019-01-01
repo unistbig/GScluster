@@ -272,7 +272,8 @@ ui = function(){
             numericInput(inputId = 'alpha', label = 'Network weight α (for pMM only)', value = 1, min = 0, max = 1, step = 0.05),
             sliderInput(inputId = 'num1', label = 'Minimum Seed Size',value = 3, min = 3, max = 8, step=1),
             numericInput(inputId = 'num2', label = 'Merging Threshold', value = 0.5, step = 0.05, min= 0.1, max = 0.9),
-            actionButton(inputId = 'btn8', label = 'Apply', style='margin-left:auto')
+            textOutput('txt1'),
+            actionButton(inputId = 'btn8', label = 'Apply', style='margin-left:17em')
           ),
           fluidRow(
             width = 12,
@@ -353,7 +354,7 @@ ui = function(){
           actionButton( # HUB IN GENESETS
             inputId = 'btn15',
             label='Hubs',
-            style='position:absolute; z-index:9999;right:1em;margin-top:4em;'
+            style='position:absolute; z-index:9999;left:1em;margin-top:37em;width:14em;'
           ),
 		  fluidRow(
 		  width=12,
@@ -363,8 +364,8 @@ ui = function(){
             z-index: 9999;
             position: absolute;
             background: white;
-            top: 12em;
-            right: 1em;
+            top: 41em;
+            left: 19em;
             width :10em;
             display: none;',
 			actionButton(inputId='btn16',label='genesethub', style="width:8em;"), # GENESET Hub
@@ -403,7 +404,8 @@ ui = function(){
             margin-top:6em;
             right:0.5em;',
             DT::dataTableOutput(outputId = 'tab2'),
-            actionButton(inputId='ClearTab2', label = 'Clear', style='float:right;display:none;margin-top:1em;')
+            actionButton(inputId='ClearTab2', label = 'Hide Tab', style='float:right;display:none;margin-top:1em;')
+            #actionButton(inputId='ClearTabNode', label = 'Unselect Nodes', style='float:right;display:none;margin-top:1em;')
           ),
 
           uiOutput(
@@ -533,6 +535,10 @@ server = function(input, output, session) {
 
   v = GetDOP(GsM, PPI, .alpha)
   DC = unname(quantile(v, percentRank(as.numeric(GetDO(GsM)), 0.5 )))
+  DC2 = unname(quantile(GetDK(GsM), percentRank(as.numeric(GetDO(GsM)), 0.5 )))
+
+  output$txt1 = renderText(paste("pMM : ",round(DC,4), "MM : ",0.5,"Kappa : ", round(DC2,4), collapse = ''))
+
   updateNumericInput(session, 'num2',label='Maximum gene-set distance', value = as.numeric(DC), step = 0.05, min= 0.1, max = 0.9)
   # DC = quantile(v,ecdf(GetDO(GsM))(0.5)) # DOP's (MM's 0.5's percentage) value
   cl = GetClust(DistCutoff = DC, MinSize = 3, Dist = v, DistType = 2, GM = GsM)
@@ -609,7 +615,17 @@ server = function(input, output, session) {
     shinyjs::showElement("ClearTab2",  anim = 'slide', time = 0.5)
 	  shinyjs::hideElement("DivContainOpt5")
 
-    output$tab2 = DT::renderDataTable(BuildMultiHub(cl,GsM,PPI, input$PPICutoff, ScoreCutoff))
+    output$tab2 = DT::renderDataTable(BuildMultiHub(cl,GsM,PPI, input$PPICutoff, ScoreCutoff) )
+  })
+
+    #observeEvent(input$tab2_cell_clicked,{
+      #v = input$tab2_cell_clicked
+      #print(v)
+    #
+    #})
+
+  observeEvent(input$tab2_rows_selected,{
+    js$HighlightTab()
   })
 
   # Render Wordcloud
@@ -848,6 +864,7 @@ server = function(input, output, session) {
 
   observeEvent(input$btn16,{
   	shinyjs::showElement('ClearTab2')
+    shinyjs::show('DivContainTab2')
     shinyjs::show("tab2")
 	  tab = matrix(0,0,2)
 
@@ -866,7 +883,9 @@ server = function(input, output, session) {
   	output$tab2 = DT::renderDataTable(DT::datatable(tab[1:5,],
   	colnames = c("Cluster","Degree"),
   	options = list(dom = 't'),
-    rownames = FALSE))
+  	selection='single',
+    rownames = FALSE)
+  	)
   	shinyjs::hideElement("DivContainOpt5")
 
   })
@@ -874,7 +893,7 @@ server = function(input, output, session) {
   observeEvent(input$btn17,{
 	  shinyjs::showElement('ClearTab2')
 	  shinyjs::hideElement('DivContainOpt5')
-    shinyjs::show('tab2')
+    shinyjs::show('DivContainTab2')
 	  i = as.numeric(input$menuI)
     genes = unique(unlist(GsM[cl[[i]]]))
 	  nobj = BuildGeneNetwork(genes, input$PPICutoff/1000, PPI, ScoreCutoff)
