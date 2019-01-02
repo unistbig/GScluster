@@ -498,7 +498,7 @@ RenderGeneNetwork = function(genes, output, PPICutoff, PPI, ScoreCutoff, session
     }
   )
 
-  output$CY = renderRcytoscapejs( rcytoscapejs(cjn$nodes, cjn$edges))
+  output$CY = renderRcytoscapejs( rcytoscapejs(cjn$nodes, cjn$edges, highlightConnectedNodes = FALSE) )
 
   shinyjs::delay(
     ms = 2000,

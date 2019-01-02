@@ -1,4 +1,4 @@
-Package: mypkg
+Package: GScluster
 Title: GScluster
 Version: 0.0.0.9000
 Authors@R: person("Jinhwan", "Kim", email = "kjh0530@unist.ac.kr", role = c("aut", "cre"))

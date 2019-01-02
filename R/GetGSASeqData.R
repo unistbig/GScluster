@@ -1,16 +1,17 @@
 #'
 #' @title Transform GSA-Seq result to use GScluster
 #'
-#' @param filename directory of GSA-SNP2 result file
+#' @param GSA directory of GSA-seq result file ( GSA result )
+#' @param Score directory of GSA-seq result file ( Gene score )
 #'
-#' @usage GetGSASeqData(filename)
+#' @usage GetGSASeqData(GSA, Score)
 #'
 #' @export
 #'
 #'
 
-GetGSASeqData = function(filename){
-  tab = read.delim(filename, header = T, stringsAsFactors = FALSE)
+GetGSASeqData = function(GSA, Score){
+  tab = read.delim(GSA, header = T, stringsAsFactors = FALSE)
   GS = tab[,1]
   Qvalues = as.numeric(tab[,8])
   Direction = tab[,10]
@@ -24,7 +25,11 @@ GetGSASeqData = function(filename){
 
   GSAresult = data.frame(cbind(GS, Genelist, Qvalues, Direction), stringsAsFactors = FALSE)
   GSAresult[,3] = as.numeric(GSAresult[,3])
-  return(GSAresult)
+
+  tab = read.delim(score, stringsAsFactors = FALSE)
+  GeneScores = data.frame(tab[,c(1,4)], stringsAsFactors = FALSE)
+
+  return(list(GSAresult = GSAresult, GeneScores = GeneScores))
 }
 
 

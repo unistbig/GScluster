@@ -108,7 +108,7 @@ ui = function(){
           selected = TRUE
           #startExpanded = TRUE,
         ), # Network
-        menuItem(text = 'Network Options',
+        menuItem(text = 'Network Type',
 
                    actionButton( # GENESETNETWORK BUTTON
                      inputId = 'btn2',

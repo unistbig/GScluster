@@ -4,10 +4,12 @@
 \alias{GetGSASeqData}
 \title{Transform GSA-Seq result to use GScluster}
 \usage{
-GetGSASeqData(filename)
+GetGSASeqData(GSA, Score)
 }
 \arguments{
-\item{filename}{directory of GSA-SNP2 result file}
+\item{GSA}{directory of GSA-seq result file ( GSA result )}
+
+\item{Score}{directory of GSA-seq result file ( Gene score )}
 }
 \description{
 Transform GSA-Seq result to use GScluster
