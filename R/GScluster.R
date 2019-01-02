@@ -20,12 +20,12 @@
 GScluster = function(
   GSAresult = NULL, GeneScores = NULL, PPI = NULL,
   Species ='H', alpha = 1, GsQCutoff = 0.25, GQCutoff = 0.25){
-  # arg1 -> inst/FOLDERNAME ( mypkg )
+  # arg1 -> inst/FOLDERNAME ( GScluster )
   # arg2 -> ...?
-  appDir = system.file("mypkg", package = 'mypkg')
+  appDir = system.file("GScluster", package = 'GScluster')
   if(appDir ==''){
     stop(
-      "Could not find mypkg Directory, Try re-installing 'mypkg'.",
+      "Could not find GScluster Directory, Try re-installing 'GScluster'.",
       call. = FALSE
     )
   }
