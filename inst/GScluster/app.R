@@ -710,15 +710,15 @@ server = function(input, output, session) {
   observeEvent(input$btn8,{
     if(input$sel2 =='MM'){
       v = GetDO(GsM)
-      cl = GetClust(input$num2,input$num1, v, 1, GsM)
+      cl <<- GetClust(input$num2,input$num1, v, 1, GsM)
     }
     if(input$sel2 =='pMM'){
       v = GetDOP(GsM, PPI, input$alpha)
-      cl = GetClust(input$num2,input$num1, v, 2, GsM)
+      cl <<- GetClust(input$num2,input$num1, v, 2, GsM)
     }
     if(input$sel2 =='Kappa'){
       v = GetDK(GsM)
-      cl = GetClust(input$num2,input$num1, v, 3, GsM)
+      cl <<- GetClust(input$num2,input$num1, v, 3, GsM)
     }
 
     nobj = BuildNetworkObj(cl, GsN, v, input$num2)
@@ -734,34 +734,13 @@ server = function(input, output, session) {
       nodeWidth = '30'
     )
 
-
     output$CY = renderRcytoscapejs( rcytoscapejs(cjn$nodes, cjn$edges, highlightConnectedNodes = FALSE))
     UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))
     UpdateClusters(session, 1:length(cl))
     ClearCy()
 
-    #if(!IsGsD){ shinyjs::delay( ms = 2000, expr = { js$BorderGSNode() }) }
-
-    #if(IsGsD){
-      #shinyjs::delay(
-        #ms = 2000,
-        #expr = {
-          #DN = intersect(nobj$nodeData[which(nobj$nodeData[,'color']!='#ffdd59'),"id"], GsN[which(GsD=='DN')])
-          #DN = paste0("#",DN,collapse = ',')
-          #js$DnGSNode(DN)
-
-          #UP = intersect(nobj$nodeData[which(nobj$nodeData[,'color']!='#ffdd59'),"id"], GsN[which(GsD=='UP')])
-          #UP = paste0("#",UP,collapse = ',')
-          #js$UpGSNode(UP)
-        #}
-      #)
-    #}
-
-
-    #output$legend = renderUI( BuildLegend(nobj$color) )
     tab = BuildDT(cl, GsN, GsM, GsQ)
     output$tab1 = DT::renderDataTable(tab)
-
 
     shinyjs::hideElement("DivContainOpt3")
   })
@@ -840,6 +819,7 @@ server = function(input, output, session) {
   observeEvent(input$HIGHLIGHT_NETWORK,{
     v = input$HIGHLIGHT_NETWORK
     i = as.numeric(input$menuI)
+
     Nodes = GsN[unique(unlist(cl[[i]]))]
     Nodes = paste0("#",Nodes,collapse = ',')
 
