@@ -368,9 +368,9 @@ ui = function(){
             left: 19em;
             width :10em;
             display: none;',
-			actionButton(inputId='btn16',label='genesethub', style="width:8em;"), # GENESET Hub
-			actionButton(inputId='btn17',label='genehub', style="width:8em;"), # GENE Hub
-			actionButton(inputId='RenderTab2', label='Multi', style="width:8em;") # MULTI Hub
+			actionButton(inputId='btn16',label='Gene-set Hub', style="width:8em;"), # GENESET Hub
+			actionButton(inputId='btn17',label='Gene Hub', style="width:8em;"), # GENE Hub
+			actionButton(inputId='RenderTab2', label='Multi-cluster Hub', style="width:8em;") # MULTI Hub
 			),
 
           actionButton(
