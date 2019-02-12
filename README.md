@@ -22,5 +22,10 @@ To check example file.<br>
 <a href = 'https://github.com/unistbig/GScluster/raw/master/inst/GScluster/sample_geneset.txt' target = "_blank">Geneset file</a><br>
 <a href = 'https://github.com/unistbig/GScluster/raw/master/inst/GScluster/sample_genescore.txt' target = "_blank">Genescore file</a><br>
 ***
+GScluster's Expected runningtime increases as gene-set size increases.
+Here are their brief relationship plotted.
+<img src = 'https://user-images.githubusercontent.com/6457691/52620818-fb9a6200-2ee8-11e9-8130-375eb74e23b4.png' width = 300></img><br>
+It takes ~ 10 min within 1500 input genesets.
+***
 
 # Additional info can accessed via User manual.
