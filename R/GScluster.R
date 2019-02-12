@@ -5,7 +5,7 @@
 #' @param GeneScores R object contain DE analysis result, 2 (genesymbol, score) column matrix
 #' @param PPI Matrix with rowname, colname : genesymbol and value should 0 ~ 1. if null, STRING will be used.
 #' @param Species A character for species, default is Human.
-#' possible value is : (A)rabidopsis, (C).elegans, (E).Coli, (F)ly, (H)uman, (M)ouse, (R)at, (Y)east, (Z)ebrafish
+#' possible value is : (A)rabidopsis, (C).elegans, (E).Coli, (F)ly, (H)uman, R(I)ce, (M)ouse, (R)at, (Y)east, (Z)ebrafish
 #' @param alpha A numeric value between 0(No network) ~ 1 (Full network). weight for network in pMM Distance. default is 1
 #' @param GsQCutoff A numeric value, threshold to use geneset. default is 0.25
 #' @param GQCutoff A numeric value, threshold to use gene. default is 0.25

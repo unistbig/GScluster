@@ -60,6 +60,7 @@ if(!is.null(.PPI)){ # not string PPI, no use btn4;
     D = ReadDiseaseFile()
     DirName='human/'
   }
+  if(.Species=='I'){ DirName="rice/" }
   if(.Species=='M'){ DirName="mouse/" }
   if(.Species=='R'){ DirName="rat/" }
   if(.Species=='Y'){ DirName="yeast/" }
