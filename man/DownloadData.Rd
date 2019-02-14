@@ -8,7 +8,7 @@ DownloadData('human')
 }
 \arguments{
 \item{species}{text value for which species PPI data will downloaded.
-possible value is : arabidopsis, celegans, eColi, fly, human, mouse, rat, yeast, zebrafish}
+possible value is : arabidopsis, celegans, eColi, fly, human, mouse, rat, rice, yeast, zebrafish}
 }
 \description{
 Download additional GScluster Data

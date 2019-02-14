@@ -14,7 +14,7 @@ GScluster() # will run demo data
 \item{PPI}{Matrix with rowname, colname : genesymbol and value should 0 ~ 1. if null, STRING will be used.}
 
 \item{Species}{A character for species, default is Human.
-possible value is : (A)rabidopsis, (C).elegans, (E).Coli, (F)ly, (H)uman, (M)ouse, (R)at, (Y)east, (Z)ebrafish}
+possible value is : (A)rabidopsis, (C).elegans, (E).Coli, (F)ly, (H)uman, R(I)ce, (M)ouse, (R)at, (Y)east, (Z)ebrafish}
 
 \item{alpha}{A numeric value between 0(No network) ~ 1 (Full network). weight for network in pMM Distance. default is 1}
 

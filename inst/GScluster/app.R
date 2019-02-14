@@ -3,10 +3,14 @@ source(file = 'Functions.R', local = TRUE)
 # Additional function to check rcytoscapejs library
 CheckCy = function(){
   if(!require("rcytoscapejs")) {
-    print("To Run this appliaction, rcytoscapejs package required")
-    print("Please Download Package from https://github.com/cytoscape/cyjShiny/releases")
-    print("and Install that, command should looks like : ")
-    print("install.packages('cyjShiny-0.0.7.tar.gz', repos = NULL) ")
+    #print("To Run this appliaction, rcytoscapejs package required")
+    #print("Please Download Package from https://github.com/cytoscape/cyjShiny/releases")
+    #print("and Install that, command should looks like : ")
+    #print("install.packages('cyjShiny-0.0.7.tar.gz', repos = NULL) ")
+    print("install rcytoscapejs package")
+    install.packages("https://github.com/cytoscape/cyjShiny/archive/v0.0.7.tar.gz",
+                     repos=NULL, method="libcurl")
+    library(rcytoscapejs)
   }
   else{
     library(rcytoscapejs)
