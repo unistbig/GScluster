@@ -11,7 +11,7 @@
 
 DownloadData = function(species){
   NowDir = getwd()
-  dataDir = file.path(paste0(system.file("mypkg", package = 'mypkg'),'/',species))
+  dataDir = file.path(paste0(system.file("GScluster", package = 'GScluster'),'/',species))
   if(!dir.exists(dataDir)) { dir.create(dataDir,showWarnings = FALSE) }
 
   setwd(dataDir)
@@ -20,7 +20,6 @@ DownloadData = function(species){
   if(species == 'human') { filelist = c(filelist,'hippie.RData') }
 
   filelist = setdiff(filelist, dir())
-
   urls = paste0('https://github.com/unistbig/GScluster-Data/raw/master/', species,'/',filelist)
   for(i in 1:length(urls)){
     download.file(urls[i], filelist[i])

@@ -71,6 +71,11 @@ if(!is.null(.PPI)){ # not string PPI, no use btn4;
   if(.Species=='Z'){ DirName="zebrafish/" }
 
   Files = paste0(DirName,paste0("l",1:6), '.RData')
+
+  if(!file.exists(Files[1])){
+    DownloadData(species=strsplit(DirName,'/')[[1]])
+  }
+
   for(i in 1:6){load(Files[i])}
   load(paste0(DirName,'string.RData'))
 
