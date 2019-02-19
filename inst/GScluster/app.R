@@ -112,14 +112,14 @@ ui = function(){
     ),
     sidebar = shinydashboard::dashboardSidebar(
       shinydashboard::sidebarMenu(
+        menuItem(text = "Clustering Results", tabName = 'menu2'), # Table
         menuItem(
-          text = "Network",
+          text = "Network Plot",
           tabName = 'menu1',
           selected = TRUE
           #startExpanded = TRUE,
         ), # Network
         menuItem(text = 'Network Type',
-
                    actionButton( # GENESETNETWORK BUTTON
                      inputId = 'btn2',
                      label = "Gene-set Network",
@@ -137,7 +137,7 @@ ui = function(){
                    verticalLayout(
                      selectizeInput(inputId='menuI',label='Select Gene-set Cluster',choices='NOT BUILT YET',selected=NULL, width='auto'),
                      #actionButton(inputId = 'HIGHLIGHT_NETWORK', label='Highlight', style='z-index:999'),
-                     shinyWidgets::materialSwitch(inputId = 'HIGHLIGHT_NETWORK', label ='', status = 'info'),
+                     #shinyWidgets::materialSwitch(inputId = 'HIGHLIGHT_NETWORK', label ='', status = 'info'),
                      sliderInput(inputId='PPICutoff',label="PPI Cutoff: ",min=0,max=999,value=700,step=10),
                      #checkboxInput(inputId='GRAY_EDGE',label='Combined Score',value=TRUE),
                      #uiOutput(outputId="my_cbgi"),
@@ -147,8 +147,8 @@ ui = function(){
                    ),
                    width = 12
                  )
-                 ),
-        menuItem(text = "Clustering Results", tabName = 'menu2') # Table
+          )
+
       )
     ),
     body = shinydashboard::dashboardBody(
@@ -531,8 +531,6 @@ server = function(input, output, session) {
       nodeWidth = '30'
     )
 
-
-
     output$CY = renderRcytoscapejs( rcytoscapejs(cjn$nodes, cjn$edges, highlightConnectedNodes = FALSE))
     UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))
     UpdateClusters(session, 1:length(cl))
@@ -709,20 +707,30 @@ server = function(input, output, session) {
   observeEvent(input$btn13, {
     #js$SearchNode(input$sel1)
     v = paste0("#", input$sel1)
+    idx = which(input$sel1 == GsN)
+    res = c()
+    for(i in 1:length(cl)){ if(idx%in%cl[[i]]){res = c(res,i)} }
+    if(length(res)>1){res = paste0(res, collapse = ',')}
+
+    js$IndicateCluster(c(v,res))
     js$HighNode(v)
-    shinyjs::delay( ms = 1000, expr = { js$DownNode(v) })
 
-    shinyjs::delay( ms = 2000, expr = { js$HighNode(v) })
-    shinyjs::delay( ms = 3000, expr = { js$DownNode(v) })
+    shinyjs::delay( ms = 1000, expr = { js$DownNode(v);js$DownIndicate() })
 
-    shinyjs::delay( ms = 4000, expr = { js$HighNode(v) })
-    shinyjs::delay( ms = 5000, expr = { js$DownNode(v) })
+    shinyjs::delay( ms = 2000, expr = { js$HighNode(v);js$HighIndicate() })
+    shinyjs::delay( ms = 3000, expr = { js$DownNode(v);js$DownIndicate() })
 
-    shinyjs::delay( ms = 6000, expr = { js$HighNode(v) })
-    shinyjs::delay( ms = 7000, expr = { js$DownNode(v) })
+    shinyjs::delay( ms = 4000, expr = { js$HighNode(v);js$HighIndicate() })
+    shinyjs::delay( ms = 5000, expr = { js$DownNode(v);js$DownIndicate() })
 
-    shinyjs::delay( ms = 8000, expr = { js$HighNode(v) })
-    shinyjs::delay( ms = 9000, expr = { js$DownNode(v) })
+    shinyjs::delay( ms = 6000, expr = { js$HighNode(v);js$HighIndicate() })
+    shinyjs::delay( ms = 7000, expr = { js$DownNode(v);js$DownIndicate() })
+
+    shinyjs::delay( ms = 8000, expr = { js$HighNode(v);js$HighIndicate() })
+    shinyjs::delay( ms = 9000, expr = { js$DownNode(v);js$DownIndicate() })
+
+
+
 
   })
 
@@ -839,21 +847,31 @@ server = function(input, output, session) {
     shinyjs::toggleElement("DivContainOpt4",  anim = 'slide', time = 0.5)
     })
 
-  observeEvent(input$HIGHLIGHT_NETWORK,{
-    v = input$HIGHLIGHT_NETWORK
-    i = as.numeric(input$menuI)
+  observeEvent(input$menuI,{
+    if(input$menuI !='Unselect'){
+      i = as.numeric(input$menuI)
 
-    Nodes = GsN[unique(unlist(cl[[i]]))]
-    Nodes = paste0("#",Nodes,collapse = ',')
+      Nodes = GsN[unique(unlist(cl[[i]]))]
+      Nodes = paste0("#",Nodes,collapse = ',')
 
-    if(v){
+      #if(v){
       js$HighNode(Nodes)
-      shinyjs::disable('menuI')
+      shinyjs::delay(1000, js$DownNode(Nodes))
+      shinyjs::delay(2000, js$HighNode(Nodes))
+      shinyjs::delay(3000, js$DownNode(Nodes))
+      shinyjs::delay(4000, js$HighNode(Nodes))
+      shinyjs::delay(5000, js$DownNode(Nodes))
+      shinyjs::delay(6000, js$HighNode(Nodes))
+      shinyjs::delay(7000, js$DownNode(Nodes))
+      shinyjs::delay(8000, js$HighNode(Nodes))
+      shinyjs::delay(9000, js$DownNode(Nodes))
+      #  shinyjs::disable('menuI')
+      #}
+      #else{
+      #shinyjs::enable('menuI')
+      #}
     }
-    else{
-      js$DownNode(Nodes)
-      shinyjs::enable('menuI')
-    }
+
   })
 
   observeEvent(input$btn15,{

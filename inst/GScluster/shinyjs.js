@@ -295,3 +295,28 @@ shinyjs.SetSoftZoom = function(){
 	$(".ui-cytoscape-panzoom").remove()
 	cy.panzoom()
 }
+
+shinyjs.IndicateCluster = function(input){
+	$("#Indicate").remove();
+	input = input[0]	
+	id = input[0]
+	i = input[1]	
+	node = cy.nodes(id)
+	var newDiv = document.createElement("div");	
+	newDiv.id = 'Indicate';
+	document.body.appendChild(newDiv);
+	var newContent = document.createTextNode("Cluster "+i)
+	newDiv.appendChild(newContent)
+	newDiv.style.position = "absolute";	
+	newDiv.style.left = node.renderedPosition('x') +'px';
+	newDiv.style.top = node.renderedPosition('y') + 'px';	
+	newDiv.style.fontSize= '3em'
+	newDiv.style.color = '#ff3ef1'		
+}
+shinyjs.HighIndicate = function(){
+	$("#Indicate").show()
+}
+
+shinyjs.DownIndicate = function(){
+	$("#Indicate").hide()
+}

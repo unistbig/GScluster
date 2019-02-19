@@ -268,7 +268,7 @@ UpdateNodeSearch = function(session, ids){
 }
 
 UpdateClusters = function(session, ids){
-  updateSelectizeInput(session, inputId = 'menuI', choices = ids, server = TRUE)
+  updateSelectizeInput(session, inputId = 'menuI', choices = c("Unselect",ids), server = TRUE)
 }
 
 GetHubGenes = function(genes, PPI, PPICutoff, ScoreCutoff){
