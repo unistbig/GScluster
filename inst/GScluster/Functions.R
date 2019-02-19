@@ -250,7 +250,7 @@ BuildDT = function(cl, GsN, GsM, GsQ){
     options = list(
       dom = 'Blftipr',
       lengthChange = TRUE,
-      pageLength = 10,
+      pageLength = 50,
       columnDefs = list(list(targets = c(3), searchable = FALSE)),
       autoWidth = TRUE,
       scrollX = TRUE,
@@ -440,10 +440,11 @@ ClearCy = function(hover = FALSE){
   shinyjs::delay( # DELAYED FUNCTION FOR AFTER CY DECLARED
     ms = 2000,
     expr = {
-      js$SetCxtTap();
+      #js$SetCxtTap();
       if(!hover){js$ClearMouseOverNode();}
       js$ColaLayout();
       js$SetClickNode();
+      js$SetSoftZoom();
     }
   )
 }

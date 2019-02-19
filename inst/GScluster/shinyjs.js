@@ -288,3 +288,10 @@ shinyjs.HighlightTab = function(){
 		}
 	}	
 }
+
+
+shinyjs.SetSoftZoom = function(){
+	cy.renderer().wheelSensitivity = 0.1
+	$(".ui-cytoscape-panzoom").remove()
+	cy.panzoom()
+}

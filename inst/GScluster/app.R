@@ -628,11 +628,11 @@ server = function(input, output, session) {
     output$tab2 = DT::renderDataTable(BuildMultiHub(cl,GsM,PPI, input$PPICutoff, ScoreCutoff) )
   })
 
-    #observeEvent(input$tab2_cell_clicked,{
-      #v = input$tab2_cell_clicked
-      #print(v)
-    #
-    #})
+  #observeEvent(input$tab2_cell_clicked,{
+    #v = input$tab2_cell_clicked
+    #print(v)
+  #
+  #})
 
   observeEvent(input$tab2_rows_selected,{
     js$HighlightTab()
@@ -710,7 +710,20 @@ server = function(input, output, session) {
     #js$SearchNode(input$sel1)
     v = paste0("#", input$sel1)
     js$HighNode(v)
-    shinyjs::delay( ms = 2000, expr = { js$DownNode(v) })
+    shinyjs::delay( ms = 1000, expr = { js$DownNode(v) })
+
+    shinyjs::delay( ms = 2000, expr = { js$HighNode(v) })
+    shinyjs::delay( ms = 3000, expr = { js$DownNode(v) })
+
+    shinyjs::delay( ms = 4000, expr = { js$HighNode(v) })
+    shinyjs::delay( ms = 5000, expr = { js$DownNode(v) })
+
+    shinyjs::delay( ms = 6000, expr = { js$HighNode(v) })
+    shinyjs::delay( ms = 7000, expr = { js$DownNode(v) })
+
+    shinyjs::delay( ms = 8000, expr = { js$HighNode(v) })
+    shinyjs::delay( ms = 9000, expr = { js$DownNode(v) })
+
   })
 
   # download network svg form
