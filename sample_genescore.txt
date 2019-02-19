@@ -1,3 +1,4 @@
+Gene	Score
 HHEX	1e-06
 IDE	1e-06
 KIF11	1e-06

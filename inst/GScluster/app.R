@@ -42,7 +42,7 @@ CheckCy()
 
 if(!is.null(.GeneScores)){ GeneScores = .GeneScores } else{
   print("genescore not given, read Demo file")
-  GeneScores = read.delim('sample_genescore.txt', header = FALSE, stringsAsFactors = FALSE) # Gene, Score
+  GeneScores = read.delim('sample_genescore.txt', header = TRUE, stringsAsFactors = FALSE) # Gene, Score
 }
 
 if(!is.null(.GSAresult)){ GSAresult = .GSAresult } else{
@@ -226,7 +226,7 @@ ui = function(){
           )
           )
           ),
-      tags$style(type = "text/css", "html,body {height: 100%}"),
+      tags$style(type = "text/css", "html,body {min-height: 100%}"),
       tags$style(type = "text/css", "height: 100%; background:'white'"),
 
       tabItems(
