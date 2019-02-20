@@ -83,7 +83,6 @@ if(!is.null(.PPI)){ # not string PPI, no use btn4;
   rm(string)
   UseString = TRUE
 }
-####
 
 GsN = GetGsN(GSAresult) # Geneset Name
 GsQ = GetGsQ(GSAresult) # Geneset Qvalue
@@ -113,42 +112,32 @@ ui = function(){
     sidebar = shinydashboard::dashboardSidebar(
       shinydashboard::sidebarMenu(
         menuItem(text = "Clustering Results", tabName = 'menu2'), # Table
-        menuItem(
+        menuItem( # Network
           text = "Network Plot",
           tabName = 'menu1',
           selected = TRUE
-          #startExpanded = TRUE,
-        ), # Network
-        menuItem(text = 'Network Type',
-                   actionButton( # GENESETNETWORK BUTTON
-                     inputId = 'btn2',
-                     label = "Gene-set Network",
-                     style='z-index:999;background-color:#232333;color:white;width:10em;'
-                   ),
-                   actionButton(  # GENENETWORK BUTTON
-                     inputId = 'btn1',
-                     label = "Gene Network ▽",
-                     style='z-index:999;width:10em;background-color:#232333;color:white;'
-                   ),
-                 div(
-                   style='display:none;
-                  z-index:999;',
-                   id='GENENETWORK_OPTIONS',
-                   verticalLayout(
-                     selectizeInput(inputId='menuI',label='Select Gene-set Cluster',choices='NOT BUILT YET',selected=NULL, width='auto'),
-                     #actionButton(inputId = 'HIGHLIGHT_NETWORK', label='Highlight', style='z-index:999'),
-                     #shinyWidgets::materialSwitch(inputId = 'HIGHLIGHT_NETWORK', label ='', status = 'info'),
-                     sliderInput(inputId='PPICutoff',label="PPI Cutoff: ",min=0,max=999,value=700,step=10),
-                     #checkboxInput(inputId='GRAY_EDGE',label='Combined Score',value=TRUE),
-                     #uiOutput(outputId="my_cbgi"),
-                     actionButton(inputId = "DRAW_GENENETWORK", label = "Show PPI", style='z-index:999')
-                     #hr(),
-                     #actionButton(inputId = 'RESTORE_GENESET_NETWORK',label = 'Reset',icon = icon('undo'))
-                   ),
-                   width = 12
-                 )
-          )
-
+        ),
+        div(
+          style='z-index:999;',
+          id='GENENETWORK_OPTIONS',
+          verticalLayout(
+            selectizeInput(
+              inputId='menuI',
+              label='Select Gene-set Cluster',
+              choices='NOT BUILT YET',
+              selected=NULL,
+              width='auto'
+            ),
+            sliderInput(
+              inputId='PPICutoff',
+              label="PPI Cutoff: ",
+              min=0,max=999,value=700,step=10
+            ),
+            actionButton(inputId = "DRAW_GENENETWORK", label = "Show PPI", style='z-index:999;width:14em;')
+          ),
+          width = 12
+        ),
+		    actionButton( inputId = 'btn2',label = "Go Back",style='z-index:999;width:14em;display:none;' )
       )
     ),
     body = shinydashboard::dashboardBody(
@@ -417,17 +406,14 @@ ui = function(){
             actionButton(inputId='ClearTab2', label = 'Hide Tab', style='float:right;display:none;margin-top:1em;')
             #actionButton(inputId='ClearTabNode', label = 'Unselect Nodes', style='float:right;display:none;margin-top:1em;')
           ),
-
           uiOutput(
             style={'position:absolute;margin-top:17em;z-index:999'},
             outputId='legend'
           ),
-
           p(
             style={'position:absolute;bottom:5em;z-index:999;'},
             imageOutput(outputId = "img1", inline = TRUE, width='300px')
           ),
-
           uiOutput(
             style={'position:absolute;bottom : 5em; margin-left:7em;z-index:999;'},
             outputId='legend2'
@@ -446,12 +432,8 @@ ui = function(){
         tabItem(
           tabName='menu3'
         )
-    )
-
-
+		)
       )
-
-
     )
   }
 
@@ -481,24 +463,17 @@ server = function(input, output, session) {
 
   		Color = sapply(GsQ[sapply(nodeData[Idx,'id'], function(i){which(i==GsN)})],
   		               function(i){ rgb(800*i+22, 388*i+158, 744*i+48,max = 255) })
-
   		nodeData[Idx,'color'] = Color# '#218E3D' # Sora GREEN COLOR
-
   		UP = GsN[which(GsD=='UP')]
   		Idx = unlist(sapply(UP, function(i){which(i == nodeData[,1])}))
 
   		Color = sapply(GsQ[sapply(nodeData[Idx,'id'], function(i){which(i==GsN)})],
-  		               function(i){ rgb(-16*i+255, 920*i, 936*i,max = 255) })
+		function(i){ rgb(-16*i+255, 920*i, 936*i,max = 255) })
 
   		nodeData[Idx,'color'] = Color # '#E81548' # Sora Red COLOR
-
-#  		output$img1 = renderImage({ list( src = "grscale.png", contentType = "image/png" ) })
   	}
 
- #   else{ output$img1 = renderImage({ list( src = "bscale.png", contentType = "image/png" ) }) }
-
     Dist = GetClustDist(ClustObj,Dist)
-
     source = target = w = c()
 
     for(i in 1:nrow(Dist)){
@@ -534,7 +509,6 @@ server = function(input, output, session) {
     UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))
     UpdateClusters(session, 1:length(cl))
     ClearCy()
-
   }
 
   ScoreCutoff = .GQCutoff
@@ -546,8 +520,7 @@ server = function(input, output, session) {
 
   output$txt1 = renderText(paste("pMM : ",round(DC,4), "MM : ",0.5,"Kappa : ", round(DC2,4), collapse = ''))
 
-  updateNumericInput(session, 'num2',label='Maximum gene-set distance', value = as.numeric(DC), step = 0.05, min= 0.1, max = 0.9)
-  # DC = quantile(v,ecdf(GetDO(GsM))(0.5)) # DOP's (MM's 0.5's percentage) value
+  updateNumericInput(session, 'num2',label='Maximum gene-set distance', value = as.numeric(DC), step = 0.05, min= 0.1, max = 0.9)  
   cl = GetClust(DistCutoff = DC, MinSize = 3, Dist = v, DistType = 2, GM = GsM)
   RenderGeneSetNetwork(cl, GsN, v, output, session, DC)
   tab = BuildDT(cl, GsN, GsM, GsQ)
@@ -558,25 +531,32 @@ server = function(input, output, session) {
 
   # GENE NETWORK
   observeEvent(input$DRAW_GENENETWORK, {
-    i = as.numeric(input$menuI)
-    genes = unique(unlist(GsM[cl[[i]]]))
-    v = RenderGeneNetwork(genes, output, input$PPICutoff/1000, PPI, ScoreCutoff, session)
+    if(input$menuI!='Unselected'){
+      i = as.numeric(input$menuI)
+      genes = unique(unlist(GsM[cl[[i]]]))
+      v = RenderGeneNetwork(genes, output, input$PPICutoff/1000, PPI, ScoreCutoff, session)
 
-    if(v){ # Success
-      ClearCy(hover = TRUE)
-      output$img1 = renderImage({ list( src = "gscale.png", contentType = "image/png" ) }, deleteFile = FALSE)
-      js$ToggleElem("GENENETWORK_OPTIONS")
-		  shinyjs::enable('btn17')
-      shinyjs::showElement("btn4")
-      shinyjs::showElement("RenderPlot1")
-      shinyjs::hideElement("RenderTab2")
-      shinyjs::hideElement("btn12")
+      if(v){ # Success
+        ClearCy(hover = TRUE)
+        output$img1 = renderImage({ list( src = "gscale.png", contentType = "image/png" ) }, deleteFile = FALSE)
+        js$ToggleElem("GENENETWORK_OPTIONS")
+        shinyjs::enable('btn17')
+        shinyjs::showElement("btn4")
+        shinyjs::showElement('btn2')
+        shinyjs::showElement("RenderPlot1")
+        shinyjs::hideElement("RenderTab2")
+        shinyjs::hideElement("btn12")
+        shinyjs::hideElement('btn16')
+        shinyjs::delay(ms = 2000,{js$SetHref()})
 
-
-      shinyjs::delay(ms = 2000,{js$SetHref()})
-
+        shinyjs::toggleElement('GENENETWORK_OPTIONS', anim = TRUE, time = 0.5)
+        shinyjs::hide('DivContainOpt1')
+        shinyjs::hide('DivContainOpt2')
+        shinyjs::hide('DivContainOpt3')
+        shinyjs::hide('DivContainOpt4')
+        shinyjs::hide('DivContainOpt5')
+      }
     }
-
   })
 
   # BACKTO BUILT GENESET NETWORK
@@ -594,7 +574,6 @@ server = function(input, output, session) {
       nodeWidth = '30'
     )
 
-
     output$CY = renderRcytoscapejs( rcytoscapejs(cjn$nodes, cjn$edges, highlightConnectedNodes = FALSE))
     UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))
     UpdateClusters(session, 1:length(cl))
@@ -610,8 +589,10 @@ server = function(input, output, session) {
     shinyjs::showElement("RenderTab2")
     shinyjs::showElement("btn12")
     shinyjs::hideElement("legend2")
-	  shinyjs::disable('btn17')
-
+	shinyjs::disable('btn17')
+    shinyjs::showElement("GENENETWORK_OPTIONS")
+    shinyjs::hideElement('btn2')
+    shinyjs::showElement('btn16')
   })
 
   # Multi-Hub : find high ranked genes around all cluster, and return their intersected
@@ -624,12 +605,6 @@ server = function(input, output, session) {
 
     output$tab2 = DT::renderDataTable(BuildMultiHub(cl,GsM,PPI, input$PPICutoff, ScoreCutoff) )
   })
-
-  #observeEvent(input$tab2_cell_clicked,{
-    #v = input$tab2_cell_clicked
-    #print(v)
-  #
-  #})
 
   observeEvent(input$tab2_rows_selected,{
     js$HighlightTab()
