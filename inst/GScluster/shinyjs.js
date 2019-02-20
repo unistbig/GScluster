@@ -1,5 +1,4 @@
-
-
+var ThisNode = '';
 shinyjs.download = function(){download()}
 
 shinyjs.SetCxtTap = function(){
@@ -53,12 +52,19 @@ id = id[0]
 col = cy.nodes(id).style('background-color')
 
 cy.nodes(id).style('background-color','#ff3ef1')
+
+cy.nodes(id).style('width','90px')
+cy.nodes(id).style('height','90px')
+
 }
 
 shinyjs.DownNode = function(id){
 id = id[0]
 
 cy.nodes(id).style('background-color',col)
+
+cy.nodes().style('width','30px')
+cy.nodes().style('height','30px')
 
 //cy.nodes("#"+id).style("height",'30px');
 //cy.nodes("#"+id).style("width",'30px');
@@ -305,18 +311,27 @@ shinyjs.IndicateCluster = function(input){
 	var newDiv = document.createElement("div");	
 	newDiv.id = 'Indicate';
 	document.body.appendChild(newDiv);
-	var newContent = document.createTextNode("Cluster "+i)
+	var newContent = document.createTextNode("Cluster "+i+'→');
 	newDiv.appendChild(newContent)
 	newDiv.style.position = "absolute";	
-	newDiv.style.left = node.renderedPosition('x') +'px';
-	newDiv.style.top = node.renderedPosition('y') + 'px';	
-	newDiv.style.fontSize= '3em'
+	newDiv.style.left = Number(node.renderedPosition('x'))+100 +'px';
+	newDiv.style.top = Number(node.renderedPosition('y'))+50 + 'px';	
+	newDiv.style.fontSize= '1.5em'
 	newDiv.style.color = '#ff3ef1'		
 }
-shinyjs.HighIndicate = function(){
-	$("#Indicate").show()
-}
+shinyjs.HighIndicate = function(){ $("#Indicate").show() }
 
-shinyjs.DownIndicate = function(){
-	$("#Indicate").hide()
+shinyjs.DownIndicate = function(){ $("#Indicate").hide() }
+shinyjs.SetNode = function(v){ ThisNode = v[0];}
+
+shinyjs.CheckNodeHigh = function(v){		
+	var vv = v;
+	if(v[0]==ThisNode){
+		shinyjs.HighIndicate()
+		shinyjs.HighNode(vv)
+		setTimeout(function() {
+			shinyjs.DownIndicate()
+			shinyjs.DownNode(vv)
+			}, 1000)
+	}
 }

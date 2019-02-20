@@ -248,14 +248,15 @@ BuildDT = function(cl, GsN, GsM, GsQ){
     filter = 'top',
     rownames = FALSE,
     options = list(
-      dom = 'Blftipr',
+      dom = 'Bltipr',
+      #dom = 'Blftipr',
       lengthChange = TRUE,
       pageLength = 50,
-      columnDefs = list(list(targets = c(3), searchable = FALSE)),
+      #columnDefs = list(list(targets = c(3), searchable = FALSE)),
       autoWidth = TRUE,
       scrollX = TRUE,
       scrollY = TRUE,
-      buttons ='csv',
+      buttons = list(list(extend='csv', text='Download')),
       order = list(2,'asc')
     ),
     colnames = c("Cluster","Name", 'Qvalue', 'Member'),

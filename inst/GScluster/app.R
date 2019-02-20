@@ -456,7 +456,6 @@ ui = function(){
   }
 
 server = function(input, output, session) {
-
   if(!UseString){shinyjs::disable('btn4')}
   if(.Species!='H'){shinyjs::disable('RenderPlot1')}
   js$SetHeight()
@@ -705,32 +704,19 @@ server = function(input, output, session) {
 
   # NodeSearch
   observeEvent(input$btn13, {
-    #js$SearchNode(input$sel1)
     v = paste0("#", input$sel1)
+    js$SetNode(v);
     idx = which(input$sel1 == GsN)
     res = c()
     for(i in 1:length(cl)){ if(idx%in%cl[[i]]){res = c(res,i)} }
     if(length(res)>1){res = paste0(res, collapse = ',')}
 
     js$IndicateCluster(c(v,res))
-    js$HighNode(v)
-
-    shinyjs::delay( ms = 1000, expr = { js$DownNode(v);js$DownIndicate() })
-
-    shinyjs::delay( ms = 2000, expr = { js$HighNode(v);js$HighIndicate() })
-    shinyjs::delay( ms = 3000, expr = { js$DownNode(v);js$DownIndicate() })
-
-    shinyjs::delay( ms = 4000, expr = { js$HighNode(v);js$HighIndicate() })
-    shinyjs::delay( ms = 5000, expr = { js$DownNode(v);js$DownIndicate() })
-
-    shinyjs::delay( ms = 6000, expr = { js$HighNode(v);js$HighIndicate() })
-    shinyjs::delay( ms = 7000, expr = { js$DownNode(v);js$DownIndicate() })
-
-    shinyjs::delay( ms = 8000, expr = { js$HighNode(v);js$HighIndicate() })
-    shinyjs::delay( ms = 9000, expr = { js$DownNode(v);js$DownIndicate() })
-
-
-
+    js$CheckNodeHigh(v)
+    shinyjs::delay( ms = 2000, expr = { js$CheckNodeHigh(v) })
+    shinyjs::delay( ms = 4000, expr = { js$CheckNodeHigh(v) })
+    shinyjs::delay( ms = 6000, expr = { js$CheckNodeHigh(v) })
+    shinyjs::delay( ms = 8000, expr = { js$CheckNodeHigh(v) })
 
   })
 
@@ -853,23 +839,13 @@ server = function(input, output, session) {
 
       Nodes = GsN[unique(unlist(cl[[i]]))]
       Nodes = paste0("#",Nodes,collapse = ',')
+      js$SetNode(Nodes)
+      js$CheckNodeHigh(Nodes)
+      shinyjs::delay( ms = 2000, expr = { js$CheckNodeHigh(Nodes) })
+      shinyjs::delay( ms = 4000, expr = { js$CheckNodeHigh(Nodes) })
+      shinyjs::delay( ms = 6000, expr = { js$CheckNodeHigh(Nodes) })
+      shinyjs::delay( ms = 8000, expr = { js$CheckNodeHigh(Nodes) })
 
-      #if(v){
-      js$HighNode(Nodes)
-      shinyjs::delay(1000, js$DownNode(Nodes))
-      shinyjs::delay(2000, js$HighNode(Nodes))
-      shinyjs::delay(3000, js$DownNode(Nodes))
-      shinyjs::delay(4000, js$HighNode(Nodes))
-      shinyjs::delay(5000, js$DownNode(Nodes))
-      shinyjs::delay(6000, js$HighNode(Nodes))
-      shinyjs::delay(7000, js$DownNode(Nodes))
-      shinyjs::delay(8000, js$HighNode(Nodes))
-      shinyjs::delay(9000, js$DownNode(Nodes))
-      #  shinyjs::disable('menuI')
-      #}
-      #else{
-      #shinyjs::enable('menuI')
-      #}
     }
 
   })
