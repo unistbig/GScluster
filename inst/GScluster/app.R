@@ -531,6 +531,7 @@ server = function(input, output, session) {
 
   # GENE NETWORK
   observeEvent(input$DRAW_GENENETWORK, {
+
     if(input$menuI!='Unselected'){
       i = as.numeric(input$menuI)
       genes = unique(unlist(GsM[cl[[i]]]))
@@ -691,7 +692,7 @@ server = function(input, output, session) {
     shinyjs::delay( ms = 2000, expr = { js$CheckNodeHigh(v) })
     shinyjs::delay( ms = 4000, expr = { js$CheckNodeHigh(v) })
     shinyjs::delay( ms = 6000, expr = { js$CheckNodeHigh(v) })
-    shinyjs::delay( ms = 8000, expr = { js$CheckNodeHigh(v) })
+    shinyjs::delay( ms = 8000, expr = { js$CheckNodeHigh(v); js$removeCluster(); })
 
   })
 
@@ -810,6 +811,7 @@ server = function(input, output, session) {
 
   observeEvent(input$menuI,{
     if(input$menuI !='Unselect'){
+
       i = as.numeric(input$menuI)
 
       Nodes = GsN[unique(unlist(cl[[i]]))]
@@ -821,6 +823,9 @@ server = function(input, output, session) {
       shinyjs::delay( ms = 6000, expr = { js$CheckNodeHigh(Nodes) })
       shinyjs::delay( ms = 8000, expr = { js$CheckNodeHigh(Nodes) })
 
+    }
+    else{
+      js$SetNode('')
     }
 
   })

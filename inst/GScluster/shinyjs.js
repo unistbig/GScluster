@@ -303,7 +303,7 @@ shinyjs.SetSoftZoom = function(){
 }
 
 shinyjs.IndicateCluster = function(input){
-	$("#Indicate").remove();
+	shinyjs.removeCluster();
 	input = input[0]	
 	id = input[0]
 	i = input[1]	
@@ -318,6 +318,10 @@ shinyjs.IndicateCluster = function(input){
 	newDiv.style.top = Number(node.renderedPosition('y'))+50 + 'px';	
 	newDiv.style.fontSize= '1.5em'
 	newDiv.style.color = '#ff3ef1'		
+}
+
+shinyjs.removeCluster = function(){
+	$("#Indicate").remove();
 }
 shinyjs.HighIndicate = function(){ $("#Indicate").show() }
 
@@ -334,4 +338,5 @@ shinyjs.CheckNodeHigh = function(v){
 			shinyjs.DownNode(vv)
 			}, 1000)
 	}
+	else{shinyjs.removeCluster()}
 }
