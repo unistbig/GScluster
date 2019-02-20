@@ -120,7 +120,7 @@ ui = function(){
         div(
           style='z-index:999;',
           id='GENENETWORK_OPTIONS',
-          verticalLayout(
+          #verticalLayout(
             selectizeInput(
               inputId='menuI',
               label='Select Gene-set Cluster',
@@ -133,11 +133,11 @@ ui = function(){
               label="PPI Cutoff: ",
               min=0,max=999,value=700,step=10
             ),
-            actionButton(inputId = "DRAW_GENENETWORK", label = "Show PPI", style='z-index:999;width:14em;')
-          ),
-          width = 12
+            actionButton(inputId = "DRAW_GENENETWORK", label = "Show PPI", style='z-index:999;width:7em;float:left;')
+          #),
+          #width = 12
         ),
-		    actionButton( inputId = 'btn2',label = "Go Back",style='z-index:999;width:14em;display:none;' )
+		    actionButton( inputId = 'btn2',label = "Go Back",style='z-index:999;width:7em;display:none;margin-top:-40px;float:right;')
       )
     ),
     body = shinydashboard::dashboardBody(
@@ -520,7 +520,7 @@ server = function(input, output, session) {
 
   output$txt1 = renderText(paste("pMM : ",round(DC,4), "MM : ",0.5,"Kappa : ", round(DC2,4), collapse = ''))
 
-  updateNumericInput(session, 'num2',label='Maximum gene-set distance', value = as.numeric(DC), step = 0.05, min= 0.1, max = 0.9)  
+  updateNumericInput(session, 'num2',label='Maximum gene-set distance', value = as.numeric(DC), step = 0.05, min= 0.1, max = 0.9)
   cl = GetClust(DistCutoff = DC, MinSize = 3, Dist = v, DistType = 2, GM = GsM)
   RenderGeneSetNetwork(cl, GsN, v, output, session, DC)
   tab = BuildDT(cl, GsN, GsM, GsQ)
@@ -539,7 +539,7 @@ server = function(input, output, session) {
       if(v){ # Success
         ClearCy(hover = TRUE)
         output$img1 = renderImage({ list( src = "gscale.png", contentType = "image/png" ) }, deleteFile = FALSE)
-        js$ToggleElem("GENENETWORK_OPTIONS")
+        #js$ToggleElem("GENENETWORK_OPTIONS")
         shinyjs::enable('btn17')
         shinyjs::showElement("btn4")
         shinyjs::showElement('btn2')
@@ -549,7 +549,7 @@ server = function(input, output, session) {
         shinyjs::hideElement('btn16')
         shinyjs::delay(ms = 2000,{js$SetHref()})
 
-        shinyjs::toggleElement('GENENETWORK_OPTIONS', anim = TRUE, time = 0.5)
+        #shinyjs::toggleElement('GENENETWORK_OPTIONS', anim = TRUE, time = 0.5)
         shinyjs::hide('DivContainOpt1')
         shinyjs::hide('DivContainOpt2')
         shinyjs::hide('DivContainOpt3')
@@ -589,8 +589,8 @@ server = function(input, output, session) {
     shinyjs::showElement("RenderTab2")
     shinyjs::showElement("btn12")
     shinyjs::hideElement("legend2")
-	shinyjs::disable('btn17')
-    shinyjs::showElement("GENENETWORK_OPTIONS")
+	  shinyjs::disable('btn17')
+    #shinyjs::showElement("GENENETWORK_OPTIONS")
     shinyjs::hideElement('btn2')
     shinyjs::showElement('btn16')
   })
@@ -637,7 +637,7 @@ server = function(input, output, session) {
     shinyjs::hide('DivContainOpt3')
     shinyjs::hide('DivContainOpt4')
     shinyjs::hide('DivContainOpt5')
-    shinyjs::hide('GENENETWORK_OPTIONS')
+    #shinyjs::hide('GENENETWORK_OPTIONS')
     })
   observeEvent(input$btn11,{
     shinyjs::toggleElement("DivContainOpt2",  anim = 'slide', time = 0.5)
@@ -645,7 +645,7 @@ server = function(input, output, session) {
     shinyjs::hide('DivContainOpt3')
     shinyjs::hide('DivContainOpt4')
     shinyjs::hide('DivContainOpt5')
-    shinyjs::hide('GENENETWORK_OPTIONS')
+    #shinyjs::hide('GENENETWORK_OPTIONS')
     })
   observeEvent(input$btn12,{
     shinyjs::toggleElement("DivContainOpt3",  anim = 'slide', time = 0.5)
@@ -653,7 +653,7 @@ server = function(input, output, session) {
     shinyjs::hide('DivContainOpt2')
     shinyjs::hide('DivContainOpt4')
     shinyjs::hide('DivContainOpt5')
-    shinyjs::hide('GENENETWORK_OPTIONS')
+    #shinyjs::hide('GENENETWORK_OPTIONS')
     })
 
   # FontSize
@@ -804,7 +804,7 @@ server = function(input, output, session) {
     shinyjs::hide('DivContainOpt2')
     shinyjs::hide('DivContainOpt3')
     shinyjs::hide('DivContainOpt5')
-    shinyjs::hide('GENENETWORK_OPTIONS')
+    #shinyjs::hide('GENENETWORK_OPTIONS')
     shinyjs::toggleElement("DivContainOpt4",  anim = 'slide', time = 0.5)
     })
 
@@ -830,7 +830,7 @@ server = function(input, output, session) {
     shinyjs::hide('DivContainOpt2')
     shinyjs::hide('DivContainOpt3')
     shinyjs::hide('DivContainOpt4')
-    shinyjs::hide('GENENETWORK_OPTIONS')
+    #shinyjs::hide('GENENETWORK_OPTIONS')
     toggleElement("DivContainOpt5",anim='slide',time=0.5)
     })
 
@@ -879,7 +879,7 @@ server = function(input, output, session) {
   })
 
   observeEvent(input$btn1, {
-    shinyjs::toggleElement('GENENETWORK_OPTIONS', anim = TRUE, time = 0.5)
+    #shinyjs::toggleElement('GENENETWORK_OPTIONS', anim = TRUE, time = 0.5)
     shinyjs::hide('DivContainOpt1')
     shinyjs::hide('DivContainOpt2')
     shinyjs::hide('DivContainOpt3')
