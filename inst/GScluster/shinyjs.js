@@ -14,13 +14,13 @@ shinyjs.ClearMouseOverNode = function(){
 cy.off("mouseover","node")
 }
 
-shinyjs.ColaLayout = function(){
+shinyjs.ColaLayout = function(rand){
 cy.layout({
 name:"cola", 
 nodeSpacing : function(node){return 3;},
 edgeLength : function(edge){return 250;},
 animate : true,
-randomize : false,
+randomize : rand[0],
 maxSimulationTime : 3000
 })
 }

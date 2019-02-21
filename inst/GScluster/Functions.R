@@ -437,13 +437,13 @@ BuildGeneNetwork = function(genes, PPICutoff = 0.7, PPI, ScoreCutoff){
 
 }
 
-ClearCy = function(hover = FALSE){
+ClearCy = function(hover = FALSE, rand = FALSE){
   shinyjs::delay( # DELAYED FUNCTION FOR AFTER CY DECLARED
     ms = 2000,
     expr = {
       #js$SetCxtTap();
       if(!hover){js$ClearMouseOverNode();}
-      js$ColaLayout();
+      js$ColaLayout(rand);
       js$SetClickNode();
       js$SetSoftZoom();
     }
