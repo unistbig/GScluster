@@ -19,7 +19,7 @@
 
 GScluster = function(
   GSAresult = NULL, GeneScores = NULL, PPI = NULL,
-  Species ='H', alpha = 1, GsQCutoff = 0.25, GQCutoff = 0.25){
+  Species ='H', alpha = 1, GsQCutoff = 0.25, GQCutoff = 0.25, Fuzzy = TRUE){
   # arg1 -> inst/FOLDERNAME ( GScluster )
   # arg2 -> ...?
   appDir = system.file("GScluster", package = 'GScluster')
@@ -36,8 +36,9 @@ GScluster = function(
   .GlobalEnv$.alpha = alpha
   .GlobalEnv$.GsQCutoff = GsQCutoff
   .GlobalEnv$.GQCutoff = GQCutoff
+  .GlobalEnv$.Fuzzy = Fuzzy
   on.exit(rm(list=c('.GeneScores', '.GSAresult', '.PPI',
-                    '.Species','.alpha', '.GsQCutoff', '.GQCutoff'),
+                    '.Species','.alpha', '.GsQCutoff', '.GQCutoff','.Fuzzy'),
              envir=.GlobalEnv))
 
   shiny::runApp(

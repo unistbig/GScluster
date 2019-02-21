@@ -120,8 +120,8 @@ MergeTrack = function(v, Dist, VarM){ lapply(1:length(v), FUN = function(i){sort
 
 GetMin = function(Dist){min(sapply(1:nrow(Dist), FUN = function(i){min(Dist[i, -i])}))}
 
-GetClust = function(DistCutoff, MinSize, Dist, DistType, GM){
-
+GetClust = function(DistCutoff, MinSize, Dist, DistType, GM, Fuzzy = TRUE){
+  Dist2 = Dist
   VarM = DistCutoff
   VarX = MinSize
   VarW = 0.5
@@ -156,7 +156,21 @@ GetClust = function(DistCutoff, MinSize, Dist, DistType, GM){
     MinDist = GetMin(Dist)
 
   }
+
+  if(!Fuzzy){
+    #rownames(Dist2) = colnames(Dist2) = paste0("GS",1:nrow(Dist2))
+    ut = unique(unlist(Track))
+    hc = hclust(as.dist(Dist2[ut,ut]))
+    ct = cutree(hc,k = length(Track))
+    Track2 = list()
+    for(i in 1:length(Track)){ Track2[[i]] = ut[which(ct==i)] }
+    return(Track2)
+  }
+
+
   return(Track) # return index form
+
+
 }
 
 ToGsN = function(i, GsN){GsN[as.numeric(i)]}

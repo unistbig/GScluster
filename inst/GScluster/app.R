@@ -441,58 +441,68 @@ server = function(input, output, session) {
   if(!UseString){shinyjs::disable('btn4')}
   if(.Species!='H'){shinyjs::disable('RenderPlot1')}
   js$SetHeight()
-
   shinyjs::disable('btn17')
-  BuildNetworkObj = function(ClustObj, GsN, Dist, MinEdge){
 
-	  #FFFFFF : WHITE
-    Col = rep("#053190",length(ClustObj)) #GetColors(length(ClustObj))
+  BuildNetworkObj = function(ClustObj, GsN, Dist, MinEdge, Fuzzy = TRUE){
+    Col = rep("#053190",length(ClustObj))
     nodeData = BuildBasicNodes(ClustObj, Col)
-
-    #nodeData = GrayDuplicateNodes(nodeData)
     nodeData = AddNameCol(nodeData, GsN)
-
     Color = sapply(GsQ[sapply(nodeData[,'id'], function(i){which(i==GsN)})],
                    function(i){ rgb(880*i, 880*i, 228*i+198,max = 255) })
-
     nodeData[,'color'] = Color
-
     if(IsGsD){
   		DN = GsN[which(GsD=='DN')]
   		Idx = unlist(sapply(DN, function(i){which(i == nodeData[,1])}))
-
   		Color = sapply(GsQ[sapply(nodeData[Idx,'id'], function(i){which(i==GsN)})],
   		               function(i){ rgb(800*i+22, 388*i+158, 744*i+48,max = 255) })
   		nodeData[Idx,'color'] = Color# '#218E3D' # Sora GREEN COLOR
   		UP = GsN[which(GsD=='UP')]
   		Idx = unlist(sapply(UP, function(i){which(i == nodeData[,1])}))
-
   		Color = sapply(GsQ[sapply(nodeData[Idx,'id'], function(i){which(i==GsN)})],
-		function(i){ rgb(-16*i+255, 920*i, 936*i,max = 255) })
-
+		  function(i){ rgb(-16*i+255, 920*i, 936*i,max = 255) })
   		nodeData[Idx,'color'] = Color # '#E81548' # Sora Red COLOR
-  	}
+    }
 
     Dist = GetClustDist(ClustObj,Dist)
     source = target = w = c()
-
-    for(i in 1:nrow(Dist)){
-      v = which(Dist[i, -i] <= MinEdge) # Strong Edges only
-      if(length(v)>0){v = v[which(names(v)<rownames(Dist)[i])]} # One-side Edge : Name Ordered
-      if(length(v)>0){
-        nv = names(v)
-        source = c(source, rep(rownames(Dist)[i], length(v)))
-        target = c(target, nv)
-        w = c(w,sapply(Dist[i,v], GetEdgeWidth))
+    if(Fuzzy){
+      for(i in 1:nrow(Dist)){
+        v = which(Dist[i, -i] <= MinEdge) # Strong Edges only
+        if(length(v)>0){v = v[which(names(v)<rownames(Dist)[i])]} # One-side Edge : Name Ordered
+        if(length(v)>0){
+          nv = names(v)
+          source = c(source, rep(rownames(Dist)[i], length(v)))
+          target = c(target, nv)
+          w = c(w,sapply(Dist[i,v], GetEdgeWidth))
+        }
       }
     }
+    else{
 
-    edgeData = data.frame(source, target, stringsAsFactors=FALSE)
-    return(list (nodeData = nodeData, edgeData = edgeData, color = Col, width = w))
+      for(i in 1:length(ClustObj)){
+
+        nv = GsN[ClustObj[[i]]]
+
+        if(length(nv)<1){next}
+
+        for(j in 1:length(nv)  ) {
+          for(k in 1:length(nv)){
+            if( nv[j] > nv[k] & Dist[nv[j],nv[k]]<=MinEdge ) {
+              source = c(source, nv[j])
+              target = c(target, nv[k])
+              w = c(w,sapply(Dist[nv[j],nv[k]], GetEdgeWidth))
+            }
+          }
+        }
+
+      }
+    }
+      edgeData = data.frame(source, target, stringsAsFactors=FALSE)
+      return(list (nodeData = nodeData, edgeData = edgeData, color = Col, width = w))
   }
 
-  RenderGeneSetNetwork = function(cl, GsN, v, output, session, DC){
-    nobj = BuildNetworkObj(cl, GsN, v, DC)
+  RenderGeneSetNetwork = function(cl, GsN, v, output, session, DC, Fuzzy = TRUE){
+    nobj = BuildNetworkObj(cl, GsN, v, DC, Fuzzy)
 
     cjn = createCytoscapeJsNetwork(
       nobj$nodeData,
@@ -521,8 +531,8 @@ server = function(input, output, session) {
   output$txt1 = renderText(paste("pMM : ",round(DC,4), "MM : ",0.5,"Kappa : ", round(DC2,4), collapse = ''))
 
   updateNumericInput(session, 'num2',label='Maximum gene-set distance', value = as.numeric(DC), step = 0.05, min= 0.1, max = 0.9)
-  cl = GetClust(DistCutoff = DC, MinSize = 3, Dist = v, DistType = 2, GM = GsM)
-  RenderGeneSetNetwork(cl, GsN, v, output, session, DC)
+  cl = GetClust(DistCutoff = DC, MinSize = 3, Dist = v, DistType = 2, GM = GsM, Fuzzy = .Fuzzy)
+  RenderGeneSetNetwork(cl, GsN, v, output, session, DC, Fuzzy = .Fuzzy)
   tab = BuildDT(cl, GsN, GsM, GsQ)
   output$tab1 = DT::renderDataTable(tab)
   ClearCy()
@@ -703,15 +713,15 @@ server = function(input, output, session) {
   observeEvent(input$btn8,{
     if(input$sel2 =='MM'){
       v = GetDO(GsM)
-      cl <<- GetClust(input$num2,input$num1, v, 1, GsM)
+      cl <<- GetClust(input$num2,input$num1, v, 1, GsM, Fuzzy = .Fuzzy)
     }
     if(input$sel2 =='pMM'){
       v = GetDOP(GsM, PPI, input$alpha)
-      cl <<- GetClust(input$num2,input$num1, v, 2, GsM)
+      cl <<- GetClust(input$num2,input$num1, v, 2, GsM, Fuzzy = .Fuzzy)
     }
     if(input$sel2 =='Kappa'){
       v = GetDK(GsM)
-      cl <<- GetClust(input$num2,input$num1, v, 3, GsM)
+      cl <<- GetClust(input$num2,input$num1, v, 3, GsM, Fuzzy = .Fuzzy)
     }
 
     nobj = BuildNetworkObj(cl, GsN, v, input$num2)
