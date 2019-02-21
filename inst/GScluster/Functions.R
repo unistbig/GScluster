@@ -160,8 +160,15 @@ GetClust = function(DistCutoff, MinSize, Dist, DistType, GM, Fuzzy = TRUE){
   if(!Fuzzy){
     #rownames(Dist2) = colnames(Dist2) = paste0("GS",1:nrow(Dist2))
     ut = unique(unlist(Track))
-    hc = hclust(as.dist(Dist2[ut,ut]))
-    ct = cutree(hc,k = length(Track))
+    DD = Dist2[ut,ut]
+    for(i in 1:nrow(DD)){
+      idxa = which(DD[i,]<=DistCutoff)
+      idxb = which(DD[i,]>DistCutoff)
+      DD[i,idxa] = 1
+      DD[i,idxb] = 0
+    }
+    ct = spectralClustering(DD, k = length(Track))
+    #ct = cutree(hc,k = length(Track))
     Track2 = list()
     for(i in 1:length(Track)){ Track2[[i]] = ut[which(ct==i)] }
     return(Track2)
