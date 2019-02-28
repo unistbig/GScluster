@@ -121,6 +121,7 @@ MergeTrack = function(v, Dist, VarM){ lapply(1:length(v), FUN = function(i){sort
 GetMin = function(Dist){min(sapply(1:nrow(Dist), FUN = function(i){min(Dist[i, -i])}))}
 
 GetClust = function(DistCutoff, MinSize, Dist, DistType, GM, Fuzzy = TRUE){
+
   Dist2 = Dist
   VarM = DistCutoff
   VarX = MinSize
@@ -129,6 +130,7 @@ GetClust = function(DistCutoff, MinSize, Dist, DistType, GM, Fuzzy = TRUE){
   Track = list()
 
   for(i in 1:nrow(Dist)){ Track[[i]] = GetLinked(Dist[i,], DistCutoff) }
+
   Track = RemoveSmallSeed(Track, VarX)
   Track = RemoveWeakRatio(Track, VarW, Dist, DistCutoff)
   names(Track) = NULL
@@ -174,9 +176,7 @@ GetClust = function(DistCutoff, MinSize, Dist, DistType, GM, Fuzzy = TRUE){
     return(Track2)
   }
 
-
   return(Track) # return index form
-
 
 }
 
@@ -467,6 +467,7 @@ ClearCy = function(hover = FALSE, rand = FALSE){
       js$ColaLayout(rand);
       js$SetClickNode();
       js$SetSoftZoom();
+      js$defineColorMap();
     }
   )
 }

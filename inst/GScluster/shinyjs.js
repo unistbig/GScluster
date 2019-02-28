@@ -1,18 +1,13 @@
 var ThisNode = '';
+var m;
+var NodeSize = 30;
 shinyjs.download = function(){download()}
-
 shinyjs.SetCxtTap = function(){
 cy.off("cxttap")
-cy.on("cxttap", function(evt){
-if(evt.cyTarget === cy){
-shinyjs.BoxSelectionToggle();
-}
-})
+cy.on("cxttap", function(evt){ if(evt.cyTarget === cy){ shinyjs.BoxSelectionToggle(); } })
 }
 
-shinyjs.ClearMouseOverNode = function(){
-cy.off("mouseover","node")
-}
+shinyjs.ClearMouseOverNode = function(){ cy.off("mouseover","node") }
 
 shinyjs.ColaLayout = function(rand){
 cy.layout({
@@ -44,75 +39,29 @@ cy.pan({x: P.x + cy.width()/2 - nodeP.x, y : P.y + cy.height()/2 - nodeP.y});
 }
 */
 
-shinyjs.HighNode = function(id){
-id = id[0]
-//cy.nodes(id).style('border-color','#e74c3c') // red
-//cy.nodes(id).style('border-width','4px')
-
-col = cy.nodes(id).style('background-color')
-
-cy.nodes(id).style('background-color','#ff3ef1')
-
-cy.nodes(id).style('width','90px')
-cy.nodes(id).style('height','90px')
-
-}
-
-shinyjs.DownNode = function(id){
-id = id[0]
-
-cy.nodes(id).style('background-color',col)
-
-cy.nodes().style('width','30px')
-cy.nodes().style('height','30px')
-
-//cy.nodes("#"+id).style("height",'30px');
-//cy.nodes("#"+id).style("width",'30px');
-//cy.nodes(id).style('border-width','0px')
-
-}
-
-shinyjs.ToggleElem = function(id){
-$("#"+id).toggle("medium")
-}
-
-shinyjs.HideElem = function(id){
-$("#"+id).hide("medium")
-}
-
-shinyjs.CheckElemOpened = function(id){
-return($("#"+id).css("display") == "block")
-}
-
-shinyjs.BoxSelectionToggle = function(){
-cy.boxSelectionEnabled(!cy.boxSelectionEnabled())
-}
-
-shinyjs.ClearEdge = function(){
-cy.edges().style("opacity",0.5)
-}
-
+shinyjs.ToggleElem = function(id){ $("#"+id).toggle("medium") }
+shinyjs.HideElem = function(id){ $("#"+id).hide("medium")}
+shinyjs.CheckElemOpened = function(id){ return($("#"+id).css("display") == "block") }
+shinyjs.BoxSelectionToggle = function(){ cy.boxSelectionEnabled(!cy.boxSelectionEnabled()) }
+shinyjs.ClearEdge = function(){ cy.edges().style("opacity",0.5) }
 shinyjs.BorderNode = function(){
-cy.nodes().style('border-color','#2c3e50')
-cy.nodes().style('border-width','4px')
+	cy.nodes().style('border-color','#2c3e50')
+	cy.nodes().style('border-width','4px')
 }
-
 shinyjs.ColorLabelNode = function(){
-cy.nodes().style('textOutlineColor','white')
-cy.nodes().style('textOutlineWidth','1px')
+	cy.nodes().style('textOutlineColor','white')
+	cy.nodes().style('textOutlineWidth','1px')
 }
-
 shinyjs.BorderGSNode = function(){
-cy.nodes().style('border-color','#f1592a')
-cy.nodes().style('border-width','4px')
+	cy.nodes().style('border-color','#f1592a')
+	cy.nodes().style('border-width','4px')
 }
-
-shinyjs.DnGSNode = function(id){
-cy.nodes(id[0]).style('backgroundColor','#b4eab2') // b4eab2 (GREEN) , 5758BB( BLUE ) 
+shinyjs.DnGSNode = function(id){ 
+	cy.nodes(id[0]).style('backgroundColor','#b4eab2') // b4eab2 (GREEN) , 5758BB( BLUE ) 
 }
 
 shinyjs.UpGSNode = function(id){
-cy.nodes(id[0]).style('backgroundColor','#F8caf9')	// f8caf9 (EPN PINK), Fda7df ( GS PINK )
+	cy.nodes(id[0]).style('backgroundColor','#F8caf9')	// f8caf9 (EPN PINK), Fda7df ( GS PINK )
 }
 
 shinyjs.SetHref = function(){	
@@ -133,9 +82,7 @@ shinyjs.SetHeight = function(){
 	$("#CYCONTAINER").css("height",v)
 }
 
-shinyjs.CyFit = function(){
-	cy.fit(cy.zoom())
-}
+shinyjs.CyFit = function(){ cy.fit(cy.zoom())}
 
 shinyjs.SetClickNode = function(){
 	// background : cancle
@@ -247,20 +194,16 @@ shinyjs.SetClickNode = function(){
 	})
 }
 
-shinyjs.StrongEdge = function(){
-	cy.edges().style('width','3px')
-}
+shinyjs.StrongEdge = function(){ cy.edges().style('width','3px') }
 
 shinyjs.HighlightTab = function(){	
 	v = cy.nodes("#"+$("#tab2 .selected td")[0].innerText)
-		
 	if(v.length){ // node exist
 		if(HighlightedNode == undefined){ // nothing selected before		
 			v.trigger('click')
 			v.select()
 		}
-		else if(HighlightedNode === v){
-			
+		else if(HighlightedNode === v){			
 			v.trigger('click')
 			v.unselect()
 		}
@@ -268,27 +211,14 @@ shinyjs.HighlightTab = function(){
 			// Deselect pre-selected Nodes
 			neighborNodes = HighlightedNode.neighborhood().nodes()
 			neighborEdges = HighlightedNode.neighborhood().edges()
-
-			for(var i =0;i<neighborNodes.length;i++){
-				neighborEdges = neighborEdges.union(
-				neighborNodes[i].edgesWith(neighborNodes.difference(neighborNodes[i]))
-				)
-			}
-
-			for(var i=0;i<neighborNodes.length;i++){ 
-				neighborNodes[i].style('background-color',v1[i])
-			}
+			for(var i =0;i<neighborNodes.length;i++){ neighborEdges = neighborEdges.union( neighborNodes[i].edgesWith(neighborNodes.difference(neighborNodes[i])) ) }
+			for(var i=0;i<neighborNodes.length;i++){ neighborNodes[i].style('background-color',v1[i]) }
 			HighlightedNode.style('background-color',v1[i])
-
-			for(var i=0;i<neighborEdges.length;i++){
-				neighborEdges[i].style('line-color',v2[i])
-			}
+			for(var i=0;i<neighborEdges.length;i++){ neighborEdges[i].style('line-color',v2[i]) }
 			v1 = [];
-			v2 = [];
-								
+			v2 = [];								
 			HighlightedNode.unselect()
-			HighlightedNode = undefined;
-			
+			HighlightedNode = undefined;			
 			v.trigger('click')		
 			v.select()		
 		}
@@ -304,7 +234,7 @@ shinyjs.SetSoftZoom = function(){
 
 shinyjs.IndicateCluster = function(input){
 	shinyjs.removeCluster();
-	input = input[0]	
+	input = input[0]
 	id = input[0]
 	i = input[1]	
 	node = cy.nodes(id)
@@ -320,23 +250,67 @@ shinyjs.IndicateCluster = function(input){
 	newDiv.style.color = '#ff3ef1'		
 }
 
-shinyjs.removeCluster = function(){
-	$("#Indicate").remove();
-}
+shinyjs.removeCluster = function(){ $("#Indicate").remove();}
 shinyjs.HighIndicate = function(){ $("#Indicate").show() }
-
 shinyjs.DownIndicate = function(){ $("#Indicate").hide() }
-shinyjs.SetNode = function(v){ ThisNode = v[0];}
+shinyjs.SetNode = function(v){ 	
+	if(ThisNode=='' & v[0]=='#'){		
+		return
+	} // initial 
+	if(ThisNode!=''){			
+		if($("#Indicate").length){shinyjs.DownIndicate()}
+		shinyjs.DownNode(ThisNode)
+	}	
+	ThisNode = v[0];
+}
 
-shinyjs.CheckNodeHigh = function(v){		
+shinyjs.HighNode = function(id){
+	id = id[0]
+	if(id=='#'){return} // unselect ? 	
+	cy.nodes(id).style('background-color','#ff3ef1')
+	cy.nodes(id).style('width',NodeSize*3+'px')
+	cy.nodes(id).style('height',NodeSize*3+'px')
+}
+
+shinyjs.DownNode = function(id){	
+	id = id[0]
+	if(id=='#'){return}
+	cy.nodes(id).style('width',NodeSize+'px')
+	cy.nodes(id).style('height',NodeSize+'px')	
+	id = id.split(',');
+	for(var i=0;i<id.length;i++){ cy.nodes(id[i]).style('background-color',m.get(id[i].replace('#',''))) }
+}
+
+shinyjs.CheckNodeHigh = function(v){
 	var vv = v;
 	if(v[0]==ThisNode){
 		shinyjs.HighIndicate()
 		shinyjs.HighNode(vv)
 		setTimeout(function() {
-			shinyjs.DownIndicate()
-			shinyjs.DownNode(vv)
+			shinyjs.DownIndicate();
+			shinyjs.DownNode(vv);
 			}, 1000)
 	}
 	else{shinyjs.removeCluster()}
+}
+
+shinyjs.defineColorMap = function(){
+	m = new Map();
+	var cyn = cy.nodes();
+	for(var i=0;i<cyn.length;i++){ m.put(cyn[i].id(),cyn[i].style('background-color')); }
+	return m;
+}
+
+shinyjs.SetFontSize = function(v){	
+	cy.nodes().style("font-size", v[0]+"em");
+	cy.nodes()[0].activate()
+	cy.nodes()[0].unactivate()
+}
+
+shinyjs.SetNodeSize = function(v){
+	NodeSize = v[0];
+	cy.nodes().style("height", NodeSize+"px");
+	cy.nodes().style("width", NodeSize+"px");
+	cy.nodes()[0].activate()
+	cy.nodes()[0].unactivate()
 }

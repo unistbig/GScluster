@@ -233,7 +233,7 @@ ui = function(){
           ),
           actionButton( # 1em to 3em --> 5 ~ 15
             inputId = "btn11",
-            label = 'Label Size',
+            label = 'Graph Size',
             style='position:absolute; z-index:9999;right:19.5em;top:0.5em;'
           ),
           actionButton(
@@ -287,7 +287,9 @@ ui = function(){
             right: 11em;
             display: none;',
             sliderInput(inputId = 'sld1',label = 'Node Label Size (px)',min = 1, max = 3, value = 1, step = 0.2),
-            actionButton(inputId = 'btn6', label = "Apply")
+            actionButton(inputId = 'btn6', label = "Apply"),
+            sliderInput(inputId='sld2', label='Node Size (px)', min = 30, max = 120, value = 30, step = 30),
+            actionButton(inputId = 'btn18', label = "Apply")
           ),
           fluidRow(
             width = 12,
@@ -528,7 +530,7 @@ server = function(input, output, session) {
   DC = unname(quantile(v, percentRank(as.numeric(GetDO(GsM)), 0.5 )))
   DC2 = unname(quantile(GetDK(GsM), percentRank(as.numeric(GetDO(GsM)), 0.5 )))
 
-  output$txt1 = renderText(paste("pMM : ",round(DC,4), "MM : ",0.5,"Kappa : ", round(DC2,4), collapse = ''))
+  output$txt1 = renderText(paste("pMM : ",round(DC,4), "= MM : ",0.5,"= Kappa : ", round(DC2,4), collapse = ''))
 
   updateNumericInput(session, 'num2',label='Maximum gene-set distance', value = as.numeric(DC), step = 0.05, min= 0.1, max = 0.9)
   cl = GetClust(DistCutoff = DC, MinSize = 3, Dist = v, DistType = 2, GM = GsM, Fuzzy = .Fuzzy)
@@ -581,8 +583,8 @@ server = function(input, output, session) {
       edgeColor = '#001c54',
       nodeLabelColor = 'black',
       nodeShape = 'ellipse',
-      nodeHeight = '30',
-      nodeWidth = '30'
+      nodeHeight = input$sld2,
+      nodeWidth = input$sld2
     )
 
     output$CY = renderRcytoscapejs( rcytoscapejs(cjn$nodes, cjn$edges, highlightConnectedNodes = FALSE))
@@ -733,8 +735,8 @@ server = function(input, output, session) {
       nodeLabelColor = 'black',
       edgeColor = '#001c54',
       nodeShape = 'ellipse',
-      nodeHeight = '30',
-      nodeWidth = '30'
+      nodeHeight = input$sld2,
+      nodeWidth = input$sld2
     )
 
     output$CY = renderRcytoscapejs( rcytoscapejs(cjn$nodes, cjn$edges, highlightConnectedNodes = FALSE))
@@ -821,9 +823,7 @@ server = function(input, output, session) {
 
   observeEvent(input$menuI,{
     if(input$menuI !='Unselect'){
-
       i = as.numeric(input$menuI)
-
       Nodes = GsN[unique(unlist(cl[[i]]))]
       Nodes = paste0("#",Nodes,collapse = ',')
       js$SetNode(Nodes)
@@ -832,7 +832,6 @@ server = function(input, output, session) {
       shinyjs::delay( ms = 4000, expr = { js$CheckNodeHigh(Nodes) })
       shinyjs::delay( ms = 6000, expr = { js$CheckNodeHigh(Nodes) })
       shinyjs::delay( ms = 8000, expr = { js$CheckNodeHigh(Nodes) })
-
     }
     else{
       js$SetNode('')
@@ -900,6 +899,12 @@ server = function(input, output, session) {
     shinyjs::hide('DivContainOpt3')
     shinyjs::hide('DivContainOpt4')
     shinyjs::hide('DivContainOpt5')
+  })
+
+  observeEvent(input$btn18, {
+    js$SetNodeSize(input$sld2)
+    shinyjs::hideElement("DivContainOpt2")
+    js$CyFit();
   })
 }
 
