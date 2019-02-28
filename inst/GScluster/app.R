@@ -536,7 +536,7 @@ server = function(input, output, session) {
   cl = GetClust(DistCutoff = DC, MinSize = 3, Dist = v, DistType = 2, GM = GsM, Fuzzy = .Fuzzy)
   RenderGeneSetNetwork(cl, GsN, v, output, session, DC, Fuzzy = .Fuzzy)
   tab = BuildDT(cl, GsN, GsM, GsQ)
-  output$tab1 = DT::renderDataTable(tab)
+  output$tab1 = DT::renderDataTable(tab, server = FALSE)
   ClearCy()
   if(IsGsD){ output$img1 = renderImage({ list( src = "grscale.png", contentType = "image/png" ) }, deleteFile = FALSE) }
   else{ output$img1 = renderImage({ list( src = "bscale.png", contentType = "image/png") }, deleteFile = FALSE) }
@@ -596,7 +596,7 @@ server = function(input, output, session) {
     else{ output$img1 = renderImage({ list( src = "bscale.png", contentType = "image/png" ) }, deleteFile = FALSE) }
 
     tab = BuildDT(cl, GsN, GsM, GsQ)
-    output$tab1 = DT::renderDataTable(tab)
+    output$tab1 = DT::renderDataTable(tab, server = FALSE)
     shinyjs::hideElement("btn4")
     shinyjs::hideElement("RenderPlot1")
     shinyjs::showElement("RenderTab2")
@@ -745,7 +745,7 @@ server = function(input, output, session) {
     ClearCy(rand = TRUE)
 
     tab = BuildDT(cl, GsN, GsM, GsQ)
-    output$tab1 = DT::renderDataTable(tab)
+    output$tab1 = DT::renderDataTable(tab, server = FALSE)
 
     shinyjs::hideElement("DivContainOpt3")
   })
