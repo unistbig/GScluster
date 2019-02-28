@@ -288,7 +288,7 @@ ui = function(){
             display: none;',
             sliderInput(inputId = 'sld1',label = 'Node Label Size (px)',min = 1, max = 3, value = 1, step = 0.2),
             actionButton(inputId = 'btn6', label = "Apply"),
-            sliderInput(inputId='sld2', label='Node Size (px)', min = 30, max = 120, value = 30, step = 30),
+            sliderInput(inputId='sld2', label='Node Size (px)', min = 30, max = 120, value = 60, step = 30),
             actionButton(inputId = 'btn18', label = "Apply")
           ),
           fluidRow(
