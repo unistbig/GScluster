@@ -1,6 +1,6 @@
 GScluster is a standalone Shiny/R package for network-weighted gene-set clustering and network visualization.<br>
 
-How to insall GScluster
+Installation
 =========
 Open R program and type following commands in R console.
 
