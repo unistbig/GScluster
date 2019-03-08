@@ -11,10 +11,10 @@ Open R program and type following commands in R console.
 
 Example Run
 =========
-* To run demo file, please type following R code.
+<b>To run demo file, please type following R code.</b><br>
 >> GScluster()
 
-* To run user's own data, please modify following codes.<br>
+<b>To run user's own data, please modify following codes.</b><br>
 1) Read gene-set analysis result table.<br>
 >> GSAresult=read.delim('https://github.com/unistbig/GScluster/raw/master/sample_geneset.txt', stringsAsFactors=FALSE)<br>
 2) Read gene score table.<br>
