@@ -26,7 +26,7 @@ User's Manual
 ===========
 User's manual is available <a href = "https://github.com/unistbig/GScluster/raw/master/GScluster_manual_v1.1.6.pdf" target = "_blank">here</a>.
 
-Example data
+Example data download
 ===========
 * Diagram Data
 <br><a href = 'https://github.com/unistbig/GScluster/raw/master/inst/GScluster/sample_geneset.txt' target = "_blank">Gene-set analysis result file</a> (q-value cutoff: 0.25)<br>
@@ -43,3 +43,5 @@ Example data
 
 <b>Contact: dougnam@unist.ac.kr <br></b>
 Any feedback or comments are greatly appreciated!!<br>
+
+-_-
