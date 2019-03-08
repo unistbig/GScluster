@@ -41,7 +41,7 @@ Example data download
 <img src = 'https://user-images.githubusercontent.com/6457691/52764859-0a0d8880-3065-11e9-9ee2-b14d77c28d8e.png' width =400></img><br>
 ***
 
-<b>Contact: dougnam@unist.ac.kr <br></b>
+<b>Contact: Prof.Dougu Nam <dougnam@unist.ac.kr> <br></b>
 Any feedback or comments are greatly appreciated!!<br>
 
-++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
