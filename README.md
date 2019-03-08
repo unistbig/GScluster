@@ -22,14 +22,6 @@ Example Run
 3) Run GScluster<br>
 >> GScluster(GSAresult = GSAresult, GeneScores = GeneScores, Species = 'H', alpha = 1, GsQCutoff = 0.25, GQCutoff = 0.05)<br>
 
-
->> GSAresult=read.delim('https://github.com/unistbig/GScluster/raw/master/sample_geneset.txt', stringsAsFactors=FALSE) # Read gene-set analysis result table.<br>
-
->> GeneScores=read.delim('https://github.com/unistbig/GScluster/raw/master/sample_genescore.txt', header=F) # Read gene score table.<br>
-
->> GScluster(GSAresult = GSAresult, GeneScores = GeneScores, Species = 'H', alpha = 1, GsQCutoff = 0.25, GQCutoff = 0.05) # Run GScluster<br>
-
-
 User's Manual
 ===========
 User's manual is available <a href = "https://github.com/unistbig/GScluster/raw/master/GScluster_manual_v1.1.6.pdf" target = "_blank">here</a>.
