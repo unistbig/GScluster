@@ -49,4 +49,3 @@ Example data download
 <b>Contact: Dougu Nam (dougnam@unist.ac.kr) <br></b>
 Any feedback or comments are greatly appreciated!!<br>
 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
