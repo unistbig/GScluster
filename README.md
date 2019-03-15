@@ -36,7 +36,7 @@ Example data download
 <br><a href = 'https://github.com/unistbig/GScluster/raw/master/sample_geneset2.txt' target = "_blank">Gene-set ananlysis result file</a> (q-value cutoff: 0.01) <br>
 <a href = 'https://github.com/unistbig/GScluster/raw/master/sample_genescore2.txt' target = "_blank">Genescore file</a>  (q-value cutoff: 0.01) <br>
 
-* Acute Myeloid Leukemia Data 
+* Acute Myeloid Leukemia (AML) Data 
 <br><a href = 'https://github.com/unistbig/GScluster/raw/master/sample_geneset3.txt' target = "_blank">Gene-set ananlysis result file</a> (q-value cutoff: 0.01) <br>
 <a href = 'https://github.com/unistbig/GScluster/raw/master/sample_genescore3.txt' target = "_blank">Genescore file</a>  (q-value cutoff: 0.01) <br>
 
