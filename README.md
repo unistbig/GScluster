@@ -28,13 +28,18 @@ User's manual is available <a href = "https://github.com/unistbig/GScluster/raw/
 
 Example data download
 ===========
-* Diagram Data
+* Type 2 Diabetes Mellitus Data (DIAGRAM)
 <br><a href = 'https://github.com/unistbig/GScluster/raw/master/inst/GScluster/sample_geneset.txt' target = "_blank">Gene-set analysis result file</a> (q-value cutoff: 0.25)<br>
 <a href = 'https://github.com/unistbig/GScluster/raw/master/inst/GScluster/sample_genescore.txt' target = "_blank">Genescore file</a> (q-value cutoff: 0.01)<br>
 
 * Colon Cancer Data
 <br><a href = 'https://github.com/unistbig/GScluster/raw/master/sample_geneset2.txt' target = "_blank">Gene-set ananlysis result file</a> (q-value cutoff: 0.01) <br>
 <a href = 'https://github.com/unistbig/GScluster/raw/master/sample_genescore2.txt' target = "_blank">Genescore file</a>  (q-value cutoff: 0.01) <br>
+
+* Acute Myeloid Leukemia Data 
+<br><a href = 'https://github.com/unistbig/GScluster/raw/master/sample_geneset3.txt' target = "_blank">Gene-set ananlysis result file</a> (q-value cutoff: 0.01) <br>
+<a href = 'https://github.com/unistbig/GScluster/raw/master/sample_genescore3.txt' target = "_blank">Genescore file</a>  (q-value cutoff: 0.01) <br>
+
 
 ***
 <b>Running time</b> of GScluster is shown below for different numbers of input gene-sets.
