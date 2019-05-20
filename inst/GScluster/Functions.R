@@ -132,13 +132,17 @@ GetClust = function(DistCutoff, MinSize, Dist, DistType, GM, Fuzzy = TRUE){
   for(i in 1:nrow(Dist)){ Track[[i]] = GetLinked(Dist[i,], DistCutoff) }
 
   Track = RemoveSmallSeed(Track, VarX)
+  if(length(Track)==1){return(Track)}
   Track = RemoveWeakRatio(Track, VarW, Dist, DistCutoff)
+  if(length(Track)==1){return(Track)}
   names(Track) = NULL
   MinDist = -9999
 
   while(MinDist <= VarM){
     Track = GetUniq(Track)
+    if(length(Track)==1){return(Track)}
     Track = RemoveIncluded(Track)
+    if(length(Track)==1){return(Track)}
     TrackGenes = GetGenes(Track, GM)
 
     if(DistType==1){ Dist = GetDO(TrackGenes) }
@@ -146,17 +150,18 @@ GetClust = function(DistCutoff, MinSize, Dist, DistType, GM, Fuzzy = TRUE){
     if(DistType==3){ Dist = GetDK(TrackGenes) }
 
     Track = MergeTrack(Track, Dist, VarM)
+    if(length(Track)==1){break}
     Track = GetUniq(Track)
+    if(length(Track)==1){break}
     Track = RemoveIncluded(Track)
+    if(length(Track)==1){break}
     TrackGenes = GetGenes(Track, GM)
 
-    if(length(Track)==1){break}
     if(DistType==1){Dist = GetDO(TrackGenes)}
     if(DistType==2){Dist = GetDOP(TrackGenes, PPI)}
     if(DistType==3){Dist = GetDK(TrackGenes)}
 
     MinDist = GetMin(Dist)
-
   }
 
   if(!Fuzzy){
@@ -403,7 +408,10 @@ BuildGeneNetwork = function(genes, PPICutoff = 0.7, PPI, ScoreCutoff){
   # build edges
 
   genes = intersect(genes, rownames(PPI))
-  genes = intersect(genes, names(which(GS<ScoreCutoff)))
+  if(!is.null(GS)){
+    genes = intersect(genes, names(which(GS<ScoreCutoff)))
+  }
+
 
   if(length(genes) ==0){
     showNotification("NO Genes with Cutoff", type='error')
@@ -442,10 +450,13 @@ BuildGeneNetwork = function(genes, PPICutoff = 0.7, PPI, ScoreCutoff){
   # build nodes
   name = id = unique(union(source, target))
 
-  color = sapply(GS[id], function(i){
-    # rgb(1020*i,180*i+210,176*i+211,max = 255)
-    rgb(860*i, 400*i+155, 720*i+47,max = 255)
-  })
+  color = rep('#F8EFBA',length(id)) # not genescore : yellow color
+  if(!is.null(GS)){
+    color = sapply(GS[id], function(i){
+      # rgb(1020*i,180*i+210,176*i+211,max = 255)
+      rgb(860*i, 400*i+155, 720*i+47,max = 255)
+    })
+  }
 
   href = c()
   suppressWarnings(

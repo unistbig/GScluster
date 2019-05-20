@@ -21,7 +21,7 @@ CheckCy = function(){
 
 # object handling Functions
 
-GetGsN = function(tab){ tab[,1] }
+GetGsN = function(tab){ toupper(gsub(' ','_', tab[,1])) }
 GetGsQ = function(tab){ tab[,3] }
 GetGsM = function(tab){ lapply(1:nrow(tab), function(i){strsplit(tab[i,2],' ')[[1]]}) }
 GetGsD = function(tab){ tab[,4] }
@@ -40,14 +40,18 @@ CheckCy()
 
 #### DEMO DATAS
 
-if(!is.null(.GeneScores)){ GeneScores = .GeneScores } else{
-  print("genescore not given, read Demo file")
-  GeneScores = read.delim('sample_genescore.txt', header = TRUE, stringsAsFactors = FALSE) # Gene, Score
+# if sample : both genescore and gsaresult not exist
+if(is.null(.GeneScores) & is.null(.GSAresult)){
+  print("run example data")
+  .GSAresult = GSAresult = read.delim('sample_geneset.txt',header = TRUE, stringsAsFactors = FALSE) # Name, Genes, Qvalue
+  .GeneScores = GeneScores = read.delim('sample_genescore.txt', header = TRUE, stringsAsFactors = FALSE) # Gene, Score
+
 }
 
-if(!is.null(.GSAresult)){ GSAresult = .GSAresult } else{
-  print("GSAresult not given, read Demo file")
-  GSAresult = read.delim('sample_geneset.txt',header = TRUE, stringsAsFactors = FALSE) # Name, Genes, Qvalue
+# if gsaresult only exist
+if(!is.null(.GSAresult) & is.null(.GeneScores)){
+  GSAresult = .GSAresult
+  GeneScores = NULL
 }
 
 if(!is.null(.PPI)){ # not string PPI, no use btn4;
@@ -87,7 +91,11 @@ if(!is.null(.PPI)){ # not string PPI, no use btn4;
 GsN = GetGsN(GSAresult) # Geneset Name
 GsQ = GetGsQ(GSAresult) # Geneset Qvalue
 GsM = GetGsM(GSAresult) # Geneset Member
-GS = GetGS(GeneScores) # Gene Score
+
+GS = GeneScores # assign null value
+if(!is.null(GeneScores)){ GS = GetGS(GeneScores) }
+
+
 IsGsD = FALSE
 if(ncol(GSAresult)==4){ # Direction
   GsD = GetGsD(GSAresult)
@@ -551,7 +559,12 @@ server = function(input, output, session) {
 
       if(v){ # Success
         ClearCy(hover = TRUE)
-        output$img1 = renderImage({ list( src = "gscale.png", contentType = "image/png" ) }, deleteFile = FALSE)
+        shinyjs::hide('img1')
+        if(!is.null(GS)){
+          output$img1 = renderImage({ list( src = "gscale.png", contentType = "image/png" ) }, deleteFile = FALSE)
+          shinyjs::show('img1')
+        }
+
         #js$ToggleElem("GENENETWORK_OPTIONS")
         shinyjs::enable('btn17')
         shinyjs::showElement("btn4")
