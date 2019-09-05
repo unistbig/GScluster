@@ -406,7 +406,6 @@ BuildGeneNetwork = function(genes, PPICutoff = 0.7, PPI, ScoreCutoff){
   source = target = c()
 
   # build edges
-
   genes = intersect(genes, rownames(PPI))
   if(!is.null(GS)){
     genes = intersect(genes, names(which(GS<ScoreCutoff)))
@@ -453,6 +452,7 @@ BuildGeneNetwork = function(genes, PPICutoff = 0.7, PPI, ScoreCutoff){
   color = rep('#F8EFBA',length(id)) # not genescore : yellow color
   if(!is.null(GS)){
     color = sapply(GS[id], function(i){
+      i = as.numeric(i)
       # rgb(1020*i,180*i+210,176*i+211,max = 255)
       rgb(860*(0.25/ScoreCutoff)*i, 400*(0.25/ScoreCutoff)*i+155, 720*(0.25/ScoreCutoff)*i+47,max = 255)
     })
