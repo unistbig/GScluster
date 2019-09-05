@@ -454,7 +454,7 @@ BuildGeneNetwork = function(genes, PPICutoff = 0.7, PPI, ScoreCutoff){
   if(!is.null(GS)){
     color = sapply(GS[id], function(i){
       # rgb(1020*i,180*i+210,176*i+211,max = 255)
-      rgb(860*i, 400*i+155, 720*i+47,max = 255)
+      rgb(860*(0.25/ScoreCutoff)*i, 400*(0.25/ScoreCutoff)*i+155, 720*(0.25/ScoreCutoff)*i+47,max = 255)
     })
   }
 

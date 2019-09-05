@@ -458,18 +458,18 @@ server = function(input, output, session) {
     nodeData = BuildBasicNodes(ClustObj, Col)
     nodeData = AddNameCol(nodeData, GsN)
     Color = sapply(GsQ[sapply(nodeData[,'id'], function(i){which(i==GsN)})],
-                   function(i){ rgb(880*i, 880*i, 228*i+198,max = 255) })
+                   function(i){ rgb(880*(0.25/.GsQCutoff) *i, 880*(0.25/.GsQCutoff)*i, 228*(0.25/.GsQCutoff)*i+198,max = 255) })
     nodeData[,'color'] = Color
     if(IsGsD){
   		DN = GsN[which(GsD=='DN')]
   		Idx = unlist(sapply(DN, function(i){which(i == nodeData[,1])}))
   		Color = sapply(GsQ[sapply(nodeData[Idx,'id'], function(i){which(i==GsN)})],
-  		               function(i){ rgb(800*i+22, 388*i+158, 744*i+48,max = 255) })
+  		               function(i){ rgb(800*(0.25/.GsQCutoff)*i+22, 388*(0.25/.GsQCutoff)*i+158, 744*(0.25/.GsQCutoff)*i+48,max = 255) })
   		nodeData[Idx,'color'] = Color# '#218E3D' # Sora GREEN COLOR
   		UP = GsN[which(GsD=='UP')]
   		Idx = unlist(sapply(UP, function(i){which(i == nodeData[,1])}))
   		Color = sapply(GsQ[sapply(nodeData[Idx,'id'], function(i){which(i==GsN)})],
-		  function(i){ rgb(-16*i+255, 920*i, 936*i,max = 255) })
+		  function(i){ rgb(-16*(0.25/.GsQCutoff)*i+255, 920*(0.25/.GsQCutoff)*i, 936*(0.25/.GsQCutoff)*i,max = 255) })
   		nodeData[Idx,'color'] = Color # '#E81548' # Sora Red COLOR
     }
 
