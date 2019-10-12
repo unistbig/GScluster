@@ -17,14 +17,14 @@ edgeLength : function(edge){return 250;},
 animate : true,
 randomize : rand[0],
 maxSimulationTime : 3000
-})
+}).run()
 }
 
 shinyjs.CircleLayout = function(){
 cy.layout({
 name:"circle",
 animate : true
-})
+}).run()
 }
 
 shinyjs.SetFontSize = function(v){
@@ -68,7 +68,7 @@ shinyjs.SetHref = function(){
 	for(var i = 0;i<cy.nodes().length;i++){
 		cy.nodes()[i].data('tooltip', 
 		"<a target='_blank' href ='" 
-		+cy.nodes()[i].data('href')["attribs"]["href"]
+		+cy.nodes()[i].data('href')["href"]
 		+"'>"
 		+"More Info."
 		+"</a>"
