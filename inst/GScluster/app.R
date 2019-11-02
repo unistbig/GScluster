@@ -606,7 +606,7 @@ IndexingGsM = function(GsM, rp){
 }
 
 
-pt = proc.time()
+
 if(!is.null(.PPI)){ # not string PPI, no use btn4;
   UseString = FALSE
   PPI = .PPI
@@ -640,8 +640,8 @@ if(!is.null(.PPI)){ # not string PPI, no use btn4;
   rm(string)
   UseString = TRUE
 }
-print(proc.time() - pt)
-print(object.size(PPI))
+
+
 
 GsN = GetGenesetName(GSAresult) # Geneset Name
 GsQ = GetGenesetQvalue(GSAresult) # Geneset Qvalue
@@ -691,18 +691,22 @@ ui = function(){
               selected = NULL,
               width = 'auto'
             ),
-            sliderInput(
-              inputId = 'PPICutoff',
-              label = "PPI Cutoff: ",
-              min = 0,
-              max = 999,
-              value = 700,
-              step = 10
+            div(
+              id = 'PPICutoffContainer',
+              style='display:none;',
+              sliderInput(
+                inputId = 'PPICutoff',
+                label = "PPI Cutoff: ",
+                min = 0,
+                max = 999,
+                value = 700,
+                step = 10
+              )
             ),
             actionButton(
               inputId = "DRAW_GENENETWORK",
               label = "Show PPI",
-              style = 'z-index:999;width:7em;float:left;'
+              style = 'z-index:999;width:7em;float:left;display:none;'
             )
 
         ),
@@ -852,7 +856,7 @@ ui = function(){
             top: 3em;
             right: 11em;
             display: none;',
-            sliderInput(inputId = 'sld1',label = 'Node Label Size (px)',min = 1, max = 3, value = 1, step = 0.2),
+            sliderInput(inputId = 'sld1',label = 'Node Label Size (px)',min = 16, max = 32, value = 16, step = 4),
             actionButton(inputId = 'btn6', label = "Apply"),
             sliderInput(inputId='sld2', label='Node Size (px)', min = 30, max = 120, value = 60, step = 30),
             actionButton(inputId = 'btn18', label = "Apply")
@@ -872,7 +876,7 @@ ui = function(){
             radioButtons(
               inputId = 'rad1',
               label='',
-              choices = c("Cola","Circle"),
+              choices = c("Circle", "Cola", "Dagre", "Klay", "Spread"),
               selected = "Cola",
               inline = TRUE
             ),
@@ -1097,10 +1101,9 @@ server = function(input, output, session) {
 
   ScoreCutoff = .GQCutoff
   # DEFAULT CLUSTER = > pMM, 0.5 of MM, 3, alpha = 1
-  pt = proc.time()
-  print('V?')
+
+
   v = GetDOP(GsM, PPI, .alpha)
-  print(proc.time() - pt)
   DC = unname(quantile(v, percentRank(as.numeric(GetDO(GsM)), 0.5 )))
   DC2 = unname(quantile(GetDK(GsM), percentRank(as.numeric(GetDO(GsM)), 0.5 )))
 
@@ -1124,6 +1127,7 @@ server = function(input, output, session) {
       v = RenderGeneNetwork(genes, output, input$PPICutoff/1000, PPI, ScoreCutoff, session)
 
       if(v){ # Success
+
         ClearCy()
         shinyjs::hide('img1')
         if(!is.null(GS)){
@@ -1156,7 +1160,7 @@ server = function(input, output, session) {
     nodes = nobj$nodeData
     for(i in 1:nrow(nodes)){
       elem[[length(elem)+1]] =
-        buildNode(id = nodes[i,1], bgColor = nodes[i,3], labelColor = 'black', height = input$sld2, width = input$sld2)
+        buildNode(id = nodes[i,1], bgColor = nodes[i,3], labelColor = 'black', height = input$sld2, width = input$sld2, fontSize = input$sld1)
     }
     edges = nobj$edgeData
     for(i in 1:nrow(edges)){
@@ -1164,7 +1168,7 @@ server = function(input, output, session) {
         buildEdge(source = edges[i,1], target = edges[i,2], lineColor = '#001c54')
     }
 
-    output$cy = renderShinyCyJS(shinyCyJS(elem, layout = list(name = 'cola') ) )
+    output$cy = renderShinyCyJS(shinyCyJS(elem,layout = list(name = 'cola',nodeSpacing = 3,edgeLength = 250,animate = TRUE,randomize = TRUE,maxSimulationTime = 3000) ) )
 
     UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))
     UpdateClusters(session, 1:length(cl))
@@ -1216,6 +1220,9 @@ server = function(input, output, session) {
   observeEvent(input$btn5,{
     if(input$rad1 =='Cola'){js$ColaLayout()}
     if(input$rad1=='Circle'){js$CircleLayout()}
+    if(input$rad1=='Dagre'){js$DagreLayout()}
+    if(input$rad1=='Klay'){js$KlayLayout()}
+    if(input$rad1=='Spread'){js$SpreadLayout()}
     shinyjs::hideElement("DivContainOpt1")
   })
 
@@ -1305,7 +1312,7 @@ server = function(input, output, session) {
     nodes = nobj$nodeData
     for(i in 1:nrow(nodes)){
       elem[[length(elem)+1]] =
-        buildNode(id = nodes[i,1], bgColor = nodes[i,3], labelColor = 'black', height = input$sld2, width = input$sld2)
+        buildNode(id = nodes[i,1], bgColor = nodes[i,3], labelColor = 'black', height = input$sld2, width = input$sld2, fontSize = input$sld1)
     }
     edges = nobj$edgeData
     for(i in 1:nrow(edges)){
@@ -1313,7 +1320,8 @@ server = function(input, output, session) {
         buildEdge(source = edges[i,1], target = edges[i,2], lineColor = '#001c54')
     }
 
-    output$cy = renderShinyCyJS(shinyCyJS(elem, layout = list(name = 'cola') ) )
+    output$cy = renderShinyCyJS(shinyCyJS(elem,layout = list(name = 'cola',nodeSpacing = 3,edgeLength = 250,animate = TRUE,randomize = TRUE,maxSimulationTime = 3000) ) )
+
 
     UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))
     UpdateClusters(session, 1:length(cl))
@@ -1373,7 +1381,7 @@ server = function(input, output, session) {
 
     }
 
-    output$cy = renderShinyCyJS(shinyCyJS(elem, layout = list(name='cola')))
+    output$cy = renderShinyCyJS(shinyCyJS(elem,layout = list(name = 'cola',nodeSpacing = 3,edgeLength = 250,animate = TRUE,randomize = TRUE,maxSimulationTime = 3000) ) )
 
     UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))
     shinyjs::show("legend2")
@@ -1393,6 +1401,9 @@ server = function(input, output, session) {
 
   observeEvent(input$menuI,{
     if(input$menuI !='Unselect'){
+      shinyjs::show("DRAW_GENENETWORK");
+      shinyjs::show("PPICutoffContainer");
+
       i = as.numeric(input$menuI)
       Nodes = GsN[unique(unlist(cl[[i]]))]
       Nodes = paste0("#",Nodes,collapse = ',')
@@ -1405,6 +1416,9 @@ server = function(input, output, session) {
     }
     else{
       js$SetNode('')
+      shinyjs::hide("DRAW_GENENETWORK");
+      shinyjs::hide("PPICutoffContainer");
+
     }
 
   })

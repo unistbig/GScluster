@@ -1,6 +1,7 @@
 var ThisNode = '';
 var m;
 var NodeSize = 30;
+
 shinyjs.download = function(){download()}
 
 shinyjs.SetCxtTap = function(){
@@ -9,26 +10,39 @@ shinyjs.SetCxtTap = function(){
 }
 
 shinyjs.ColaLayout = function(rand){
-cy.layout({
-	name:"cola", 
-	nodeSpacing : function(node){return 3;},
-	edgeLength : function(edge){return 250;},
-	animate : true,
-	randomize : rand[0],
-	maxSimulationTime : 3000
-	}).run()
+	cy.layout({
+		name:"cola", 
+		nodeSpacing : function(node){return 3;},
+		edgeLength : function(edge){return 250;},
+		animate : true,
+		randomize : rand[0],
+		maxSimulationTime : 3000
+		}).run()
 }
 
 shinyjs.CircleLayout = function(){
-cy.layout({
-name:"circle",
-animate : true
-}).run()
+	cy.layout({
+	name:"circle",
+	animate : true
+	}).run()
 }
 
+shinyjs.DagreLayout = function(){
+	cy.layout({ name:'dagre', animate : true, animationDuration: 3000 }).run()
+}
+
+shinyjs.KlayLayout = function(){
+	cy.layout({name:'klay', animate : true, animationDuration : 1500}).run()
+}
+
+shinyjs.SpreadLayout = function(){
+	cy.layout({name:'spread'}).run()
+}
+
+
 shinyjs.SetFontSize = function(v){
-cy.nodes().style("font-size", v+"em");
-cy.nodes()[0].activate()
+	cy.nodes().style("font-size", v+"em");
+	cy.nodes()[0].activate()
 }
 
 shinyjs.ToggleElem = function(id){ $("#"+id).toggle("medium") }
@@ -225,13 +239,13 @@ shinyjs.IndicateCluster = function(input){
 	newDiv.style.fontSize= '1.5em'
 	newDiv.style.color = 'black'
 	//newDiv.style.color = '#ff3ef1'
-	
+
 }
 
 shinyjs.removeCluster = function(){ $("#Indicate").remove();}
 shinyjs.HighIndicate = function(){ 
-	$("#Indicate").css('left',Number(node.renderedPosition('x'))+100 +'px')
-	$("#Indicate").css('top',Number(node.renderedPosition('y'))+50 + 'px')
+	$("#Indicate").css('left',Number(cy.nodes(ThisNode).renderedPosition('x'))+100 + 'px')
+	$("#Indicate").css('top',Number(cy.nodes(ThisNode).renderedPosition('y'))+50 + 'px')
 	$("#Indicate").show()
 }
 shinyjs.DownIndicate = function(){ $("#Indicate").hide() }
@@ -250,8 +264,8 @@ shinyjs.HighNode = function(id){
 	id = id[0]
 	if(id=='#'){return} // unselect ? 	
 	cy.nodes(id).style('background-color','#ff3ef1')
-	cy.nodes(id).style('width',NodeSize*3+'px')
-	cy.nodes(id).style('height',NodeSize*3+'px')
+	cy.nodes(id).style('width',NodeSize+20+'px')
+	cy.nodes(id).style('height',NodeSize+20+'px')
 }
 
 shinyjs.DownNode = function(id){
