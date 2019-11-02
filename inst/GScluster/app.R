@@ -47,17 +47,6 @@ GetDOP = function(GsM, PPI, Alpha = 1){
   d = length(GsM)
   v = matrix(0.001,d,d)
 
-  IndexingGsM = function(GsM, rp){
-    sapply(1:length(GsM), function(i){
-      unname(unlist(sapply(GsM[[i]],
-                           function(j){
-                             a = which(j==rownames(PPI))
-                             if(length(a)){a}
-                           }), use.names = FALSE))})
-
-  }
-  GsMI = IndexingGsM(GsM, rownames(PPI))
-
   DOP = function(gs1, gs2, gsi1, gsi2, PPI, Alpha){
 
     interact = function(idx1, idx2, PPI, k = 1){
@@ -65,8 +54,8 @@ GetDOP = function(GsM, PPI, Alpha = 1){
       return(sum(PPI[idx1,idx2]^(1/k)) )
     }
 
-    score = function(A, B, IA, IB, PPI, Alpha){ #
-      w = min(length(A), length(B))/ (length(A)+length(B)) # 0.5633803
+    score = function(A, B, IA, IB, PPI, Alpha){
+      w = min(length(A), length(B))/ (length(A)+length(B))
       a = length(A)
       i = length(intersect(A,B))
       uniqA = setdiff(IA,IB)
@@ -82,6 +71,8 @@ GetDOP = function(GsM, PPI, Alpha = 1){
     return(max(min(s1, s2),0.001))
 
   }
+
+  GsMI = IndexingGsM(GsM, rownames(PPI))
 
   for(i in 1:(d-1)){
     for(j in (i+1):d){
@@ -99,7 +90,7 @@ GetLinkedRatio = function(v, DistCutoff){
   return( ( length(which(v<DistCutoff)) - L )/(L^2-L) ) # except Diag part ( -L )
 }
 
-GetUniq = function(v){ return(v[which(!duplicated(v))]) } # what's different with unique?
+GetUniq = function(v){ return(v[which(!duplicated(v))]) }
 
 RemoveIncluded = function(v){
   L = length(v)
@@ -172,7 +163,7 @@ GetClust = function(DistCutoff, MinSize, Dist, DistType, GM, Fuzzy = TRUE){
   }
 
   if(!Fuzzy){
-    #rownames(Dist2) = colnames(Dist2) = paste0("GS",1:nrow(Dist2))
+
     ut = unique(unlist(Track))
     DD = Dist2[ut,ut]
     for(i in 1:nrow(DD)){
@@ -182,7 +173,7 @@ GetClust = function(DistCutoff, MinSize, Dist, DistType, GM, Fuzzy = TRUE){
       DD[i,idxb] = 0
     }
     ct = spectralClustering(DD, k = length(Track))
-    #ct = cutree(hc,k = length(Track))
+
     Track2 = list()
     for(i in 1:length(Track)){ Track2[[i]] = ut[which(ct==i)] }
     return(Track2)
@@ -432,13 +423,13 @@ BuildGeneNetwork = function(genes, PPICutoff = 0.7, PPI, ScoreCutoff){
   color = rep('#001c54', length(source)) # Edge color : gray , #666666, / pink , #fc7bee
   edgeData = data.frame(source, target, color, stringsAsFactors=FALSE)
 
-  if(length(source) ==0){
-    showNotification("NO Interactions with Cutoff", type='error')
+  if(length(source) == 0){
+    showNotification("NO Interactions with Cutoff", type = 'error')
     return()
   }
 
   # build nodes
-  name = id = unique(union(source, target))
+  name = id = unique(union(edgeData$source, edgeData$target))
 
   color = rep('#F8EFBA',length(id)) # not genescore : yellow color
   if(!is.null(GS)){
@@ -454,12 +445,10 @@ BuildGeneNetwork = function(genes, PPICutoff = 0.7, PPI, ScoreCutoff){
 
 }
 
-ClearCy = function(hover = FALSE, rand = FALSE){
+ClearCy = function(){
   shinyjs::delay( # DELAYED FUNCTION FOR AFTER CY DECLARED
     ms = 2000,
     expr = {
-      if(!hover){js$ClearMouseOverNode();}
-      js$ColaLayout(rand);
       js$SetClickNode();
       js$SetSoftZoom();
       js$defineColorMap();
@@ -501,12 +490,12 @@ RenderGeneNetwork = function(genes, output, PPICutoff, PPI, ScoreCutoff, session
   elem = list()
 
   nodes = nobj$nodeData
-  print(head(nodes))
+
   for(i in 1:nrow(nodes)){
     elem[[length(elem)+1]] =
       buildNode(
         id = nodes[i,1], bgColor = nodes[i,3], labelColor = 'black',
-        height = 50, width = 50, tooltip = nodes[i,4])
+        height = 50, width = 50, tooltip = nodes[i,4], textOutlineColor = 'white', textOutlineWidth = '1')
   }
 
   edges = nobj$edgeData
@@ -515,24 +504,9 @@ RenderGeneNetwork = function(genes, output, PPICutoff, PPI, ScoreCutoff, session
       buildEdge(source = edges[i,1], target = edges[i,2], lineColor = '#fc7bee')
   }
 
-  #nodes = elem[1:nodeLength]
-  #suppressWarnings(
-    #for(i in 1:length(nodes)){
-      #nodes[[i]]$data$tooltip = GetGenecardURL(nodes[[i]]$data$id)
-    #}
-  #)
-
   UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))
 
-  output$cy = renderShinyCyJS(shinyCyJS(elem))
-
-  shinyjs::delay(
-    ms = 2000,
-    expr = {
-      js$ColorLabelNode()
-      js$StrongEdge();
-    }
-  )
+  output$cy = renderShinyCyJS(shinyCyJS(elem,layout = list(name = 'cola',nodeSpacing = 3,edgeLength = 250,animate = TRUE,randomize = TRUE,maxSimulationTime = 3000) ) )
 
   return(1)
 }
@@ -621,6 +595,18 @@ if(!is.null(.GSAresult) & is.null(.GeneScores)){
   GeneScores = NULL
 }
 
+IndexingGsM = function(GsM, rp){
+  sapply(1:length(GsM), function(i){
+    unname(unlist(sapply(GsM[[i]],
+                         function(j){
+                           a = which(j==rownames(PPI))
+                           if(length(a)){a}
+                         }), use.names = FALSE))})
+
+}
+
+
+pt = proc.time()
 if(!is.null(.PPI)){ # not string PPI, no use btn4;
   UseString = FALSE
   PPI = .PPI
@@ -654,6 +640,8 @@ if(!is.null(.PPI)){ # not string PPI, no use btn4;
   rm(string)
   UseString = TRUE
 }
+print(proc.time() - pt)
+print(object.size(PPI))
 
 GsN = GetGenesetName(GSAresult) # Geneset Name
 GsQ = GetGenesetQvalue(GSAresult) # Geneset Qvalue
@@ -830,7 +818,7 @@ ui = function(){
             width = 12,
             id = 'DivContainOpt3',
             style = 'border: 2px solid rgb(0, 27, 84);
-              padding: 0px 1em 1em;
+              padding: 1em 1em 1em;
               z-index: 9999;
               position: absolute;
               background: white;
@@ -857,7 +845,7 @@ ui = function(){
             id='DivContainOpt2',
             style=
               'border: 2px solid rgb(0, 27, 84);
-            padding: 0px 1em 1em;
+            padding: 1em 1em 1em;
             z-index: 9999;
             position: absolute;
             background: white;
@@ -874,7 +862,7 @@ ui = function(){
             id='DivContainOpt1',
             style=
               'border: 2px solid rgb(0, 27, 84);
-            padding: 0px 1em 1em;
+            padding: 1em 1em 1em;
             z-index: 9999;
             position: absolute;
             background: white;
@@ -903,7 +891,7 @@ ui = function(){
             id='DivContainOpt4',
             style=
               'border: 2px solid rgb(0, 27, 84);
-            padding: 0px 1em 1em;
+            padding: 1em 1em 1em;
             z-index: 9999;
             position: absolute;
             background: white;
@@ -1098,10 +1086,10 @@ server = function(input, output, session) {
     edges = nobj$edgeData
     for(i in 1:nrow(edges)){
       elem[[length(elem)+1]] =
-        buildEdge(source = edges[i,1], target = edges[i,2], lineColor = '#001c54')
+        buildEdge(source = edges[i,1], target = edges[i,2], lineColor = '#001c54', width = 1)
     }
 
-    output$cy = renderShinyCyJS(shinyCyJS(elem, layout = list(name = 'cola') ) )
+    output$cy = renderShinyCyJS(shinyCyJS(elem,layout = list(name = 'cola',nodeSpacing = 3,edgeLength = 250,animate = TRUE,randomize = TRUE,maxSimulationTime = 3000) ) )
     UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))
     UpdateClusters(session, 1:length(cl))
     ClearCy()
@@ -1109,8 +1097,10 @@ server = function(input, output, session) {
 
   ScoreCutoff = .GQCutoff
   # DEFAULT CLUSTER = > pMM, 0.5 of MM, 3, alpha = 1
-
+  pt = proc.time()
+  print('V?')
   v = GetDOP(GsM, PPI, .alpha)
+  print(proc.time() - pt)
   DC = unname(quantile(v, percentRank(as.numeric(GetDO(GsM)), 0.5 )))
   DC2 = unname(quantile(GetDK(GsM), percentRank(as.numeric(GetDO(GsM)), 0.5 )))
 
@@ -1134,7 +1124,7 @@ server = function(input, output, session) {
       v = RenderGeneNetwork(genes, output, input$PPICutoff/1000, PPI, ScoreCutoff, session)
 
       if(v){ # Success
-        ClearCy(hover = TRUE)
+        ClearCy()
         shinyjs::hide('img1')
         if(!is.null(GS)){
           output$img1 = renderImage({ list( src = "gscale.png", contentType = "image/png" ) }, deleteFile = FALSE)
@@ -1148,7 +1138,6 @@ server = function(input, output, session) {
         shinyjs::hideElement("RenderTab2")
         shinyjs::hideElement("btn12")
         shinyjs::hideElement('btn16')
-        #shinyjs::delay(ms = 2000,{js$SetHref()})
 
         shinyjs::hide('DivContainOpt1')
         shinyjs::hide('DivContainOpt2')
@@ -1179,7 +1168,7 @@ server = function(input, output, session) {
 
     UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))
     UpdateClusters(session, 1:length(cl))
-    ClearCy(rand = TRUE)
+    ClearCy()
 
     if(IsGsD){ output$img1 = renderImage({ list( src = "grscale.png", contentType = "image/png" ) }, deleteFile = FALSE) }
     else{ output$img1 = renderImage({ list( src = "bscale.png", contentType = "image/png" ) }, deleteFile = FALSE) }
@@ -1244,7 +1233,6 @@ server = function(input, output, session) {
     shinyjs::hide('DivContainOpt3')
     shinyjs::hide('DivContainOpt4')
     shinyjs::hide('DivContainOpt5')
-    #shinyjs::hide('GENENETWORK_OPTIONS')
     })
   observeEvent(input$btn12,{
     shinyjs::toggleElement("DivContainOpt3",  anim = 'slide', time = 0.5)
@@ -1252,7 +1240,6 @@ server = function(input, output, session) {
     shinyjs::hide('DivContainOpt2')
     shinyjs::hide('DivContainOpt4')
     shinyjs::hide('DivContainOpt5')
-    #shinyjs::hide('GENENETWORK_OPTIONS')
     })
 
   # FontSize
@@ -1330,7 +1317,7 @@ server = function(input, output, session) {
 
     UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))
     UpdateClusters(session, 1:length(cl))
-    ClearCy(rand = TRUE)
+    ClearCy()
 
     tab = BuildDT(cl, GsN, GsM, GsQ)
     output$tab1 = DT::renderDataTable(tab, server = FALSE)
@@ -1353,6 +1340,7 @@ server = function(input, output, session) {
     if('Database' %in% input$che1) E6 = GetColorEdge(genes, l6,'navy')
 
     nobj = BuildGeneNetwork( genes, input$PPICutoff/1000, PPI, ScoreCutoff )
+
     suppressWarnings({
         if(E1!=0){nobj$edgeData = rbind(nobj$edgeData, E1)}
         if(E2!=0){nobj$edgeData = rbind(nobj$edgeData, E2)}
@@ -1368,32 +1356,30 @@ server = function(input, output, session) {
 
     for(i in 1:nrow(nodes)){
       elem[[length(elem)+1]] =
-        buildNode(id = nodes[i,1], bgColor = nodes[i,3], labelColor = 'black', height = 50, width = 50)
+        buildNode(id = nodes[i,1], bgColor = nodes[i,3], labelColor = 'black',
+                  height = 50, width = 50, textOutlineColor = 'white', textOutlineWidth = '1px',
+                  tooltip = nodes[i,4])
     }
 
     edges = nobj$edgeData
+
     for(i in 1:nrow(edges)){
-      elem[[length(elem)+1]] =
-        buildEdge(source = edges[i,1], target = edges[i,2], lineColor = edges[i,3])
+      if(edges[i,1] %in% nodes[,1] && edges[i,2] %in% nodes[,1]){
+        elem[[length(elem)+1]] =
+          buildEdge(source = as.character(edges[i,1]),
+                    target = as.character(edges[i,2]),
+                    lineColor = as.character(edges[i,3]))
+      }
+
     }
 
     output$cy = renderShinyCyJS(shinyCyJS(elem, layout = list(name='cola')))
-    shinyjs::delay(ms = 2000,{js$SetHref()})
 
     UpdateNodeSearch(session, sort(nobj$nodeData[,"id"]))
     shinyjs::show("legend2")
     output$legend2 = renderUI( BuildEviLegend() )
-    ClearCy(hover = TRUE)
+    ClearCy()
 
-    shinyjs::delay(
-      ms = 2000,
-      expr = {
-        # js$ClearEdge()
-        # js$BorderNode()
-        js$ColorLabelNode()
-        js$StrongEdge()
-      }
-    )
   })
 
   # ColorEdges
@@ -1402,7 +1388,6 @@ server = function(input, output, session) {
     shinyjs::hide('DivContainOpt2')
     shinyjs::hide('DivContainOpt3')
     shinyjs::hide('DivContainOpt5')
-    #shinyjs::hide('GENENETWORK_OPTIONS')
     shinyjs::toggleElement("DivContainOpt4",  anim = 'slide', time = 0.5)
     })
 
@@ -1429,7 +1414,6 @@ server = function(input, output, session) {
     shinyjs::hide('DivContainOpt2')
     shinyjs::hide('DivContainOpt3')
     shinyjs::hide('DivContainOpt4')
-    #shinyjs::hide('GENENETWORK_OPTIONS')
     toggleElement("DivContainOpt5",anim='slide',time=0.5)
     })
 
