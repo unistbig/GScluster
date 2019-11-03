@@ -610,8 +610,7 @@ IndexingGsM = function(GsM, rp){
 if(!is.null(.PPI)){ # not string PPI, no use btn4;
   UseString = FALSE
   PPI = .PPI
-} else
-{
+} else{
   print("PPI table is not given, STRING data is used.")
   if(.Species=='A'){ DirName="arabidopsis/" }
   if(.Species=='C'){ DirName="celegans/" }
@@ -637,6 +636,9 @@ if(!is.null(.PPI)){ # not string PPI, no use btn4;
   load(paste0(DirName,'string.RData'))
 
   PPI = string
+  if(.Species=='H'){
+    PPI = as.matrix(PPI)
+  }
   rm(string)
   UseString = TRUE
 }
