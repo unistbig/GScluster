@@ -9,19 +9,23 @@
 #'
 #' @export
 
-DownloadData = function(species){
-  NowDir = getwd()
-  dataDir = file.path(paste0(system.file("GScluster", package = 'GScluster'),'/',species))
-  if(!dir.exists(dataDir)) { dir.create(dataDir,showWarnings = FALSE) }
+DownloadData <- function(species) {
+  NowDir <- getwd()
+  dataDir <- file.path(paste0(system.file("GScluster", package = "GScluster"), "/", species))
+  if (!dir.exists(dataDir)) {
+    dir.create(dataDir, showWarnings = FALSE)
+  }
 
   setwd(dataDir)
-  filelist = paste0('l',1:6,'.RData')
-  filelist = c(filelist,'string.RData')
-  if(species == 'human') { filelist = c(filelist,'hippie.RData') }
+  filelist <- paste0("l", 1:6, ".RData")
+  filelist <- c(filelist, "string.RData")
+  if (species == "human") {
+    filelist <- c(filelist, "hippie.RData")
+  }
 
-  filelist = setdiff(filelist, dir())
-  urls = paste0('https://github.com/unistbig/GScluster-Data/raw/master/', species,'/',filelist)
-  for(i in 1:length(urls)){
+  filelist <- setdiff(filelist, dir())
+  urls <- paste0("https://github.com/unistbig/GScluster-Data/raw/master/", species, "/", filelist)
+  for (i in 1:length(urls)) {
     download.file(urls[i], filelist[i])
   }
 
