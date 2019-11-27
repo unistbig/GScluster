@@ -1164,11 +1164,12 @@ server <- function(input, output, session) {
       GsQ[sapply(nodeData[, "id"], function(i) {
         which(i == GsN)
       })],
-      function(i) {
+      function(j) {
+        j = as.numeric(j)
         rgb(
-          red = 880 * (0.25 / .GsQCutoff) * i,
-          green = 880 * (0.25 / .GsQCutoff) * i,
-          blue = 228 * (0.25 / .GsQCutoff) * i + 198, max = 255
+          red = 880 * (0.25 / .GsQCutoff) * j,
+          green = 880 * (0.25 / .GsQCutoff) * j,
+          blue = 228 * (0.25 / .GsQCutoff) * j + 198, max = 255
         )
       }
     )
@@ -1178,28 +1179,39 @@ server <- function(input, output, session) {
       Idx <- unlist(sapply(DN, function(i) {
         which(i == nodeData[, 1])
       }))
-      Color <- sapply(
-        GsQ[sapply(nodeData[Idx, "id"], function(i) {
-          which(i == GsN)
-        })],
-        function(i) {
-          rgb(800 * (0.25 / .GsQCutoff) * i + 22, 388 * (0.25 / .GsQCutoff) * i + 158, 744 * (0.25 / .GsQCutoff) * i + 48, max = 255)
-        }
-      )
-      nodeData[Idx, "color"] <- Color # '#218E3D' # Sora GREEN COLOR
+      if (length(Idx)) {
+        Color <- sapply(
+          GsQ[sapply(nodeData[Idx, "id"], function(i) {
+            which(i == GsN)
+          })],
+          function(j) {
+            j = as.numeric(j)
+            rgb(800 * (0.25 / .GsQCutoff) * j + 22,
+                388 * (0.25 / .GsQCutoff) * j + 158,
+                744 * (0.25 / .GsQCutoff) * j + 48, max = 255)
+          }
+        )
+        nodeData[Idx, "color"] <- Color # '#218E3D' # Sora GREEN COLOR
+      }
+
       UP <- GsN[which(GsD == "UP")]
       Idx <- unlist(sapply(UP, function(i) {
         which(i == nodeData[, 1])
       }))
-      Color <- sapply(
-        GsQ[sapply(nodeData[Idx, "id"], function(i) {
-          which(i == GsN)
-        })],
-        function(i) {
-          rgb(-16 * (0.25 / .GsQCutoff) * i + 255, 920 * (0.25 / .GsQCutoff) * i, 936 * (0.25 / .GsQCutoff) * i, max = 255)
-        }
-      )
-      nodeData[Idx, "color"] <- Color # '#E81548' # Sora Red COLOR
+      if (length(Idx)) {
+        Color <- sapply(
+          GsQ[sapply(nodeData[Idx, "id"], function(i) {
+            which(i == GsN)
+          })],
+          function(j) {
+            j = as.numeric(j)
+            rgb(-16 * (0.25 / .GsQCutoff) * j + 255,
+                920 * (0.25 / .GsQCutoff) * j,
+                936 * (0.25 / .GsQCutoff) * j, max = 255)
+          }
+        )
+        nodeData[Idx, "color"] <- Color # '#E81548' # Sora Red COLOR
+      }
     }
 
     Dist <- GetClustDist(ClustObj, Dist)

@@ -1,6 +1,6 @@
 Package: GScluster
 Title: GScluster
-Version: 1.1.8
+Version: 1.1.9
 Authors@R: person("Jinhwan", "Kim", email = "kjh0530@unist.ac.kr", role = c("aut", "cre"))
 Description: Visualize Clustered Gene-set Network
 Depends: 
