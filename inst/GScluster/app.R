@@ -1249,6 +1249,8 @@ server <- function(input, output, session) {
         }
       }
     }
+    nodeData$id = nodeData$name = as.character(nodeData$id)
+    nodeData$color = as.character(nodeData$color)
     edgeData <- data.frame(source, target, stringsAsFactors = FALSE)
     return(list(nodeData = nodeData, edgeData = edgeData, color = Col, width = w))
   }
@@ -1258,6 +1260,7 @@ server <- function(input, output, session) {
 
     elem <- list()
     nodes <- nobj$nodeData
+
     for (i in 1:nrow(nodes)) {
       elem[[length(elem) + 1]] <-
         buildNode(id = nodes[i, 1], bgColor = nodes[i, 3], labelColor = "black", height = 30, width = 30)
