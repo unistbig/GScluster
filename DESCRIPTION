@@ -1,6 +1,6 @@
 Package: GScluster
 Title: GScluster
-Version: 1.1.9
+Version: 1.1.10
 Authors@R: person("Jinhwan", "Kim", email = "kjh0530@unist.ac.kr", role = c("aut", "cre"))
 Description: Visualize Clustered Gene-set Network
 Depends: 
@@ -19,6 +19,6 @@ Depends:
 License: MIT
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
-
-
+RoxygenNote: 7.1.1
+Remotes:
+  jhk0530/shinyCyJS

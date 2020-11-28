@@ -11,7 +11,7 @@ shinyjs.SetCxtTap = function(){
 
 shinyjs.ColaLayout = function(rand){
 	cy.layout({
-		name:"cola", 
+		name:"cola",
 		nodeSpacing : function(node){return 3;},
 		edgeLength : function(edge){return 250;},
 		animate : true,
@@ -58,8 +58,8 @@ shinyjs.BorderGSNode = function(){
 	cy.nodes().style('border-color','#f1592a')
 	cy.nodes().style('border-width','4px')
 }
-shinyjs.DnGSNode = function(id){ 
-	cy.nodes(id[0]).style('backgroundColor','#b4eab2') // b4eab2 (GREEN) , 5758BB( BLUE ) 
+shinyjs.DnGSNode = function(id){
+	cy.nodes(id[0]).style('backgroundColor','#b4eab2') // b4eab2 (GREEN) , 5758BB( BLUE )
 }
 
 shinyjs.UpGSNode = function(id){
@@ -89,7 +89,7 @@ shinyjs.SetClickNode = function(){
 					)
 				}
 
-				for(var i=0;i<neighborNodes.length;i++){ 
+				for(var i=0;i<neighborNodes.length;i++){
 					neighborNodes[i].style('background-color',v1[i])
 				}
 				e.style('background-color',v1[i])
@@ -102,11 +102,11 @@ shinyjs.SetClickNode = function(){
 			}
 		}
 	})
-	
+
 	cy.nodes().off("click")
-	
+
 	cy.nodes().on('click', function(e){
-		e = e.target;		
+		e = e.target;
 		if(HighlightedNode != undefined){ // nothing Clicked before
 			neighborNodes = HighlightedNode.neighborhood().nodes()
 			neighborEdges = HighlightedNode.neighborhood().edges()
@@ -117,7 +117,7 @@ shinyjs.SetClickNode = function(){
 				)
 			}
 
-			for(var i=0;i<neighborNodes.length;i++){ 
+			for(var i=0;i<neighborNodes.length;i++){
 				neighborNodes[i].style('background-color',v1[i])
 			}
 			HighlightedNode.style('background-color',v1[i])
@@ -169,7 +169,7 @@ shinyjs.SetClickNode = function(){
 				)
 			}
 
-			for(var i=0;i<neighborNodes.length;i++){ 
+			for(var i=0;i<neighborNodes.length;i++){
 				neighborNodes[i].style('background-color',v1[i])
 			}
 			e.style('background-color',v1[i])
@@ -183,18 +183,18 @@ shinyjs.SetClickNode = function(){
 	})
 }
 
-shinyjs.HighlightTab = function(){	
+shinyjs.HighlightTab = function(){
 	v = cy.nodes("#"+$("#tab2 .selected td")[0].innerText)
 	if(v.length){ // node exist
-		if(HighlightedNode == undefined){ // nothing selected before		
+		if(HighlightedNode == undefined){ // nothing selected before
 			v.trigger('click')
 			v.select()
 		}
-		else if(HighlightedNode === v){			
+		else if(HighlightedNode === v){
 			v.trigger('click')
 			v.unselect()
 		}
-		else{	
+		else{
 			// Deselect pre-selected Nodes
 			neighborNodes = HighlightedNode.neighborhood().nodes()
 			neighborEdges = HighlightedNode.neighborhood().edges()
@@ -203,13 +203,13 @@ shinyjs.HighlightTab = function(){
 			HighlightedNode.style('background-color',v1[i])
 			for(var i=0;i<neighborEdges.length;i++){ neighborEdges[i].style('line-color',v2[i]) }
 			v1 = [];
-			v2 = [];								
+			v2 = [];
 			HighlightedNode.unselect()
-			HighlightedNode = undefined;			
-			v.trigger('click')		
-			v.select()		
+			HighlightedNode = undefined;
+			v.trigger('click')
+			v.select()
 		}
-	}	
+	}
 }
 
 
@@ -243,30 +243,13 @@ shinyjs.IndicateCluster = function(input){
 }
 
 shinyjs.removeCluster = function(){ $("#Indicate").remove();}
-shinyjs.HighIndicate = function(){ 
+shinyjs.HighIndicate = function(){
 	$("#Indicate").css('left',Number(cy.nodes(ThisNode).renderedPosition('x'))+100 + 'px')
 	$("#Indicate").css('top',Number(cy.nodes(ThisNode).renderedPosition('y'))+50 + 'px')
 	$("#Indicate").show()
 }
 shinyjs.DownIndicate = function(){ $("#Indicate").hide() }
-shinyjs.SetNode = function(v){
-	if(ThisNode=='' & v[0]=='#'){
-		return
-	} // initial 
-	if(ThisNode!=''){
-		if($("#Indicate").length){shinyjs.DownIndicate()}
-		shinyjs.DownNode(ThisNode)
-	}
-	ThisNode = v[0];
-}
 
-shinyjs.HighNode = function(id){
-	id = id[0]
-	if(id=='#'){return} // unselect ? 	
-	cy.nodes(id).style('background-color','#ff3ef1')
-	cy.nodes(id).style('width',NodeSize+20+'px')
-	cy.nodes(id).style('height',NodeSize+20+'px')
-}
 
 shinyjs.DownNode = function(id){
 	id = id[0]
@@ -276,6 +259,26 @@ shinyjs.DownNode = function(id){
 	id = id.split(',');
 	for(var i=0;i<id.length;i++){ cy.nodes(id[i]).style('background-color',m.get(id[i].replace('#',''))) }
 }
+
+shinyjs.SetNode = function(v){
+	if(ThisNode=='' & v[0]=='#'){
+		return
+	} // initial
+	if(ThisNode!=''){
+		if($("#Indicate").length){shinyjs.DownIndicate()}
+		shinyjs.DownNode(ThisNode)
+	}
+	ThisNode = v[0];
+}
+
+shinyjs.HighNode = function(id){
+	id = id[0]
+	if(id=='#'){return} // unselect ?
+	cy.nodes(id).style('background-color','#ff3ef1')
+	cy.nodes(id).style('width',NodeSize+20+'px')
+	cy.nodes(id).style('height',NodeSize+20+'px')
+}
+
 
 shinyjs.CheckNodeHigh = function(v){
 	var vv = v;

@@ -853,7 +853,18 @@ ui <- function() {
       tags$head(tags$script(src = "svg.min.js")),
       tags$head(tags$script(src = "additional_script.js")),
 
-      extendShinyjs(script = "shinyjs.js"), # change as scripts;
+      extendShinyjs(
+        script = "shinyjs.js",
+        functions = c(
+          'download', 'ColaLayout', 'CircleLayout','DagreLayout','KlayLayout',
+          'SpreadLayout', 'SetFontSize', 'ToggleElem', 'HideElem', 'CheckElemOpened',
+          'BoxSelectionToggle','ClearEdge', 'BorderNode', 'BorderGSNode','DnGSNode',
+          'UpGSNode','SetHeight','CyFit','SetClickNode','HighlightTab',
+          'SetSoftZoom','IndicateCluster','removeCluster','HighIndicate','DownIndicate',
+          'SetNode','HighNode', 'DownNode', 'CheckNodeHigh','defineColorMap','SetFontSize',
+          'SetNodeSize'
+                      )
+        ), # change as scripts;
 
       div(id = "create", display = "none"), # EMPTY DIV FOR DOWNLOAD SVG
       tags$head(
